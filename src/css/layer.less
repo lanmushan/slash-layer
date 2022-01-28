@@ -1,0 +1,23 @@
+.slash-layer {
+  position: fixed;
+  margin: 0 auto;
+  top: 0px;
+  left: 0px;
+  width: 800px;
+  background: red;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: white;
+  //transform: scale(0.2);
+  transform-origin: 0px 0px; // 定义缩放原点,相对于左上角的距离x、y，单位px
+  box-sizing: border-box;
+  border-radius: 10px;
+}
+
+.slash-trans {
+  transition: all 0.2s;
+  -moz-transition: all 0.2s; /* Firefox 4 */
+  -webkit-transition: all 0.2s; /* Safari 和 Chrome */
+  -o-transition: all 0.2s; /* Opera */
+
+}

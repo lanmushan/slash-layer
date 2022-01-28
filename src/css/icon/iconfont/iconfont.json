@@ -1,0 +1,86 @@
+{
+  "id": "3158148",
+  "name": "slash-layer",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "145490",
+      "name": "关闭",
+      "font_class": "guanbi",
+      "unicode": "e661",
+      "unicode_decimal": 58977
+    },
+    {
+      "icon_id": "1025296",
+      "name": "最大化",
+      "font_class": "zuidahua",
+      "unicode": "e621",
+      "unicode_decimal": 58913
+    },
+    {
+      "icon_id": "1523388",
+      "name": "说明",
+      "font_class": "ziyuan",
+      "unicode": "e65a",
+      "unicode_decimal": 58970
+    },
+    {
+      "icon_id": "1812981",
+      "name": "expand-全屏化",
+      "font_class": "expand",
+      "unicode": "e60c",
+      "unicode_decimal": 58892
+    },
+    {
+      "icon_id": "2939196",
+      "name": "关闭26",
+      "font_class": "guanbi1",
+      "unicode": "e64d",
+      "unicode_decimal": 58957
+    },
+    {
+      "icon_id": "6010945",
+      "name": "2-最小化",
+      "font_class": "-zuixiaohua",
+      "unicode": "e622",
+      "unicode_decimal": 58914
+    },
+    {
+      "icon_id": "6204756",
+      "name": "失败",
+      "font_class": "shibai",
+      "unicode": "e64e",
+      "unicode_decimal": 58958
+    },
+    {
+      "icon_id": "6342191",
+      "name": "加载",
+      "font_class": "jiazai",
+      "unicode": "e684",
+      "unicode_decimal": 59012
+    },
+    {
+      "icon_id": "6996229",
+      "name": "全屏最大化",
+      "font_class": "quanpingzuidahua",
+      "unicode": "e70e",
+      "unicode_decimal": 59150
+    },
+    {
+      "icon_id": "7162367",
+      "name": "最小化",
+      "font_class": "zuixiaohua",
+      "unicode": "e749",
+      "unicode_decimal": 59209
+    },
+    {
+      "icon_id": "9826666",
+      "name": "成功",
+      "font_class": "chenggong",
+      "unicode": "e615",
+      "unicode_decimal": 58901
+    }
+  ]
+}
