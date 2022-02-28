@@ -6,6 +6,48 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "145502",
+      "name": "错误提示",
+      "font_class": "cuowutishi",
+      "unicode": "e66c",
+      "unicode_decimal": 58988
+    },
+    {
+      "icon_id": "657506",
+      "name": "信息",
+      "font_class": "xinxi",
+      "unicode": "e649",
+      "unicode_decimal": 58953
+    },
+    {
+      "icon_id": "2857610",
+      "name": "失败",
+      "font_class": "shibai1",
+      "unicode": "e658",
+      "unicode_decimal": 58968
+    },
+    {
+      "icon_id": "6903297",
+      "name": "失败",
+      "font_class": "shibai2",
+      "unicode": "e633",
+      "unicode_decimal": 58931
+    },
+    {
+      "icon_id": "8771189",
+      "name": "成功",
+      "font_class": "chenggong1",
+      "unicode": "e65f",
+      "unicode_decimal": 58975
+    },
+    {
+      "icon_id": "9138875",
+      "name": "成功",
+      "font_class": "chenggong2",
+      "unicode": "e616",
+      "unicode_decimal": 58902
+    },
+    {
       "icon_id": "145490",
       "name": "关闭",
       "font_class": "guanbi",

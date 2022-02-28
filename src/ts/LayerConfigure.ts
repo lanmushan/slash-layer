@@ -1,6 +1,7 @@
 import {Prop, PropType} from "vue";
+import LayerWrapper from "@/components/LayerWrapper.vue";
 
-export interface LayerArea {
+export interface LayerPosition {
     width: number,
     height: number,
     top: number,
@@ -15,7 +16,7 @@ export interface LayerConfigure {
     title: string,
     max: boolean,
     min: boolean,
-    areaDef?: Map<string, LayerArea> | LayerArea | string,
+    areaDef?: Map<string, LayerPosition> | LayerPosition | string,
     yesFunc?: string | undefined,
     noFunc?: string | undefined,
     /*加载效果时间*/
@@ -23,12 +24,46 @@ export interface LayerConfigure {
 }
 
 export interface OptionsContent {
-    component:object,
+    component: object,
     props: PropType<any>
 }
 
 export interface OpenConfigure extends LayerConfigure {
     id?: string,
-    size: LayerArea,
-    content: OptionsContent
+    position?: LayerPosition,
+    content: OptionsContent,
+    header?: boolean,
+    footer: boolean,
+    btn: Array<OpenBtn>
+    autoCloseTime?: number
+
+    closeCallBack(id?: string, data?: any): string;
+}
+
+export interface OpenBtn {
+    name: string,
+    className: string,
+    data: any,
+    loading:boolean,
+    loadingText:string,
+    curLoading?:boolean|null
+    callback(LayerWrapper, data?:any): string;
+}
+
+export interface MessageConfigure {
+    title?: string,
+    icon?: string,
+    iconColor?: string,
+    msg: string
+}
+
+export interface ConfirmConfigure {
+    title?: string,
+    icon?: string,
+    msg: string,
+    data?: any
+}
+
+export interface FormConfigure extends OpenConfigure{
+    runMode?:string
 }

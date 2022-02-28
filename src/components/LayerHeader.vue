@@ -1,6 +1,7 @@
 <template>
   <div class="header" @dblclick.self="onToggleSize" @mousedown="onMouseDown">
-    <span class="title">{{ title }}</span>
+    <span class="title">
+      {{ title }}</span>
     <span class="header-tool">
       <i class="iconfont" v-if="info" title="说明">&#xe65a;</i>
       <i class="iconfont" v-if="min" @click="onMinSize" title="最小化">&#xe622;</i>
@@ -19,7 +20,7 @@ const {toRefs} = require("vue");
 
 export default defineComponent({
   name: "LayerHeader",
-  props: ["min", "max", "title", "info", "id","drag"],
+  props: ["min", "max", "title", "info", "id", "drag"],
   data() {
     return {
       full: false,
@@ -39,17 +40,17 @@ export default defineComponent({
     }
   },
   directives: {},
-  emits: ["close","toggleSize","minSize"],
+  emits: ["close", "toggleSize", "minSize"],
   methods: {
     onClose() {
       console.log("关闭")
       this.$emit("close");
     },
-    onToggleSize()
-    {
+    onToggleSize() {
+      console.log("切换大小")
       this.$emit("toggleSize");
     },
-    onMinSize(){
+    onMinSize() {
       this.$emit("minSize")
     },
     onMouseDown(e) {

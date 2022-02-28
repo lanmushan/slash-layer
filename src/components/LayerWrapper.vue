@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div ref="wrapperRef" class="layer-wrapper">
     <layer-modal @mousedown="onTop">
       <layer-header :title="options.title"
                     :max="options.max"
@@ -7,32 +7,36 @@
                     :id="options.id"
                     :min="options.min"
                     :drag="drag"
+                    v-if="options.header"
                     @close="onClose"
                     @toggleSize="onToggleSize"
-                    @minSize="doMinSize"
-      >
+                    @minSize="doMinSize">
+
       </layer-header>
-      <layer-content>
-        <component ref="content" :is="options.content.component"></component>
+      <layer-content v-slash-loading="{state:loadingState,text:loadingText}" ref="contentRef"
+                     :content="content.component" :props="content.props">
       </layer-content>
-      <layer-footer></layer-footer>
+      <layer-footer @btnClick="onBtnCLick" :id="options.id" :btnList="btnList" v-if="options.footer"></layer-footer>
     </layer-modal>
     <div class="mask" v-if="sWin" @click="doSwinToNormal">
-
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import {defineComponent, ref, PropType} from "vue";
+import {defineComponent, ref, PropType, reactive, onMounted, useTransitionState} from "vue";
 import LayerHeader from "@/components/LayerHeader.vue";
-import LayerContent from "@/components/LayerContent.vue";
+import LayerContent from "@/ts/LayerContent";
 import LayerFooter from "@/components/LayerFooter.vue";
 import LayerModal from "@/components/LayerModal.vue";
-import {OpenConfigure} from "@/ts/LayerConfigure";
+import {LayerPosition, OpenBtn, OpenConfigure} from "@/ts/LayerConfigure";
 import LayerUtil from "@/ts/LayerUtil";
+import Layer from "@/ts/Layer";
 
 const {toRefs} = require("vue");
+import {getCurrentInstance} from "vue";
+import {ComponentInternalInstance, ComponentPublicInstance} from "@vue/runtime-core";
+import useCurrentInstance from "@/ts/UseCurrentInstance";
 
 export default defineComponent({
   name: "LayerWrapper",
@@ -44,11 +48,12 @@ export default defineComponent({
       drag: true,
       sWin: false,
       homePosition: {
-        width: 0,
+        width: 200,
         height: 0,
         left: 0,
         top: 0
       },
+      /*最小化位置*/
       sWinHomePosition: {
         width: 0,
         height: 0,
@@ -60,7 +65,7 @@ export default defineComponent({
   props: {
     options: {
       type: Object as PropType<OpenConfigure>,
-      required:true
+      required: true
     }
   },
   methods: {
@@ -74,10 +79,7 @@ export default defineComponent({
     doRestoreSize() {
       const elm: HTMLElement | null = document.getElementById(this.id);
       if (elm) {
-        elm.style.width = this.homePosition.width + "px";
-        elm.style.height = this.homePosition.height + "px";
-        elm.style.top = this.homePosition.top + "px";
-        elm.style.left = this.homePosition.left + "px";
+        this.setPosition(this.homePosition);
         this.sWin = false;
         this.drag = true;
         const footers: HTMLCollection | null = elm.getElementsByClassName("footer");
@@ -86,12 +88,23 @@ export default defineComponent({
           footer['style'].position = ""
         }
       }
-      console.log("还原");
       this.full = false;
     },
+    setPosition(position: LayerPosition) {
+      const elm: HTMLElement | null = document.getElementById(this.id);
+      if (elm) {
+        elm.style.width = position.width + "px";
+        elm.style.height = position.height + "px";
+        elm.style.top = position.top + "px";
+        elm.style.left = position.left + "px";
+      }
+    },
     doFullScreen() {
+      console.log(this.id)
       const elm: HTMLElement | null = document.getElementById(this.id);
       if (!elm) {
+        console.log("未找到元素")
+
         return
       }
       const width = LayerUtil.getViewPortWidth();
@@ -171,10 +184,7 @@ export default defineComponent({
       this.doRearrange()
     },
     onClose() {
-      let elm = document.getElementById(this.id);
-      if (elm) {
-        elm.remove();
-      }
+      Layer.close(this.id);
     },
     onTop() {
       let elms = document.querySelectorAll(".slash-layer")
@@ -186,14 +196,93 @@ export default defineComponent({
         elm["style"].zIndex = '999';
       }
     },
+    doInit() {
+      if (this.$props.options.position) {
+        this.setPosition(this.$props.options.position as LayerPosition)
+      }
+    },
+
   },
   mounted() {
+    console.log(this.$props.options);
     this.onTop();
   },
-  setup(props) {
-    let {id,title}=toRefs(props);
-    console.log(props.options);
-    return {id, title}
+  created() {
+    this.doInit();
+  },
+  setup(props, ctx) {
+    console.log(props)
+    const {id, title, position, autoCloseTime, runMode, content} = toRefs(props.options);
+    const btnList = ref(reactive(props.options.btn));
+    console.log("当前模式:", runMode.value)
+    content.value.props["runMode"] = runMode.value;
+    const loadingText = ref("初始化加载");
+    const loadingState = ref(true);
+    const wrapperRef = ref<InstanceType<any>>()
+    const contentRef = ref<InstanceType<typeof LayerContent>>()
+    const instanceRef = ref<any>(null);
+
+    const doTest = () => {
+      console.log(11111111111111);
+    }
+    const setLoadingState = (state: boolean, text?: string) => {
+      for (let i = 0; i < btnList.value.length; i++) {
+        const bt: OpenBtn = btnList.value[i] as OpenBtn;
+        bt.curLoading = state;
+      }
+      if (text) {
+        loadingText.value = text;
+      }
+    }
+    /**
+     *取消加载效果
+     */
+    const cancelLoading = () => {
+      for (let i = 0; i < btnList.value.length; i++) {
+        const bt: OpenBtn = btnList.value[i] as OpenBtn;
+        bt.curLoading = false;
+      }
+      loadingState.value = false;
+    }
+    /**
+     * 当底部按钮被点击
+     * @param index
+     */
+    const onBtnCLick = (index) => {
+      setLoadingState(true);
+      if (btnList.value) {
+        const bt: OpenBtn = btnList.value[index] as OpenBtn;
+        if (bt.loading) {
+          loadingState.value = true;
+          loadingText.value = bt.loadingText;
+        }
+        if (bt.callback) {
+          bt.callback(instanceRef, bt.data);
+        }
+      }
+    }
+    setTimeout(() => {
+      loadingState.value = false;
+    }, 100)
+    onMounted(() => {
+      const {proxy} = useCurrentInstance();
+      instanceRef.value = proxy;
+    });
+
+    return {
+      id,
+      title,
+      wrapperRef,
+      position,
+      doTest,
+      contentRef,
+      onBtnCLick,
+      btnList,
+      content,
+      loadingText,
+      loadingState,
+      cancelLoading
+    }
   }
 })
 </script>
@@ -210,4 +299,10 @@ export default defineComponent({
   top: 0px;
   left: 0px;
 }
+
+.content-box {
+  padding: 10px;
+  box-sizing: border-box;
+}
+
 </style>

@@ -17,32 +17,34 @@ export default class LayerUtil {
     static getViewPortWidth(): number {
         return document.documentElement.clientWidth || document.body.clientWidth;
     }
+
     static getViewPortHeight(): number {
-          return document.documentElement.clientHeight || document.body.clientHeight;
+        return document.documentElement.clientHeight || document.body.clientHeight;
     }
-    static getAbsolutePosition(reference, target):any {
-            //因为我们会将目标元素的边框纳入递归公式中，这里先减去对应的值
-            const result = {
-                left: -target.clientLeft,
-                top: -target.clientTop,
-                right: 0,
-                bottom:0
-            }
-            let node = target;
-            while(node != reference && node != document){
-                result.left = result.left + node.offsetLeft + node.clientLeft;
-                result.top = result.top + node.offsetTop + node.clientTop;
-                node = node.parentNode;
-            }
-            if(isNaN(reference.scrollLeft)){
-                result.right = document.documentElement.scrollWidth - result.left;
-                result.bottom = document.documentElement.scrollHeight - result.top;
-            }else {
-                result.right = reference.scrollWidth - result.left;
-                result.bottom = reference.scrollHeight - result.top;
-            }
-            return result;
+
+    static getAbsolutePosition(reference, target): any {
+        //因为我们会将目标元素的边框纳入递归公式中，这里先减去对应的值
+        const result = {
+            left: -target.clientLeft,
+            top: -target.clientTop,
+            right: 0,
+            bottom: 0
         }
+        let node = target;
+        while (node != reference && node != document) {
+            result.left = result.left + node.offsetLeft + node.clientLeft;
+            result.top = result.top + node.offsetTop + node.clientTop;
+            node = node.parentNode;
+        }
+        if (isNaN(reference.scrollLeft)) {
+            result.right = document.documentElement.scrollWidth - result.left;
+            result.bottom = document.documentElement.scrollHeight - result.top;
+        } else {
+            result.right = reference.scrollWidth - result.left;
+            result.bottom = reference.scrollHeight - result.top;
+        }
+        return result;
+    }
 
     /**
      * 合并Json
@@ -58,6 +60,14 @@ export default class LayerUtil {
         return options;
     }
 
+    static leftMergeJson(left, right): Object {
+        for (const key in right) {
+            if (right[key] != undefined) {
+                left[key] = right[key];
+            }
+        }
+        return left;
+    }
 
     static deepClone(obj): Object {
         const result = typeof obj.splice === "function" ? [] : {};

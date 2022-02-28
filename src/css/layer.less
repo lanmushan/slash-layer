@@ -12,6 +12,52 @@
   transform-origin: 0px 0px; // 定义缩放原点,相对于左上角的距离x、y，单位px
   box-sizing: border-box;
   border-radius: 10px;
+
+  .content-box {
+    padding: 10px;
+    box-sizing: border-box;
+    position: relative;
+  }
+}
+
+.slash-loading {
+  background: red;
+  height: 100%;
+  width: 100%;
+  top: 0px;
+  left: 0px;
+  position: absolute;
+  z-index: 9999;
+  background: 100%;
+  box-sizing: border-box;
+  text-align: center;
+  /*flex 布局*/
+  display: flex;
+  /*实现垂直居中*/
+  align-items: center;
+  background: rgba(255,255,255,0.8);
+  /*实现水平居中*/
+  justify-content: center;
+  text-align: justify;
+  .loading-content {
+    height: 50px;
+    text-align: center;
+    .loading-icon {
+      font-size: 24px;
+      display: inline-block;
+      color: #409eff;
+      border-radius: 50%;
+      overflow: hidden;
+      animation: rotate 1s linear infinite;
+      //linear// 意思就是匀速的运动   infinite// 就是无限滚动的意思
+    }
+    .loading-describe{
+      display: block;
+      color: #4fa5fe;
+      margin-top: 10px;
+      line-height: 20px;
+    }
+  }
 }
 
 .slash-trans {
@@ -19,5 +65,45 @@
   -moz-transition: all 0.2s; /* Firefox 4 */
   -webkit-transition: all 0.2s; /* Safari 和 Chrome */
   -o-transition: all 0.2s; /* Opera */
+}
 
+@keyframes rotate {
+  from {
+    transform: rotate(0deg)
+  }
+  to {
+    transform: rotate(360deg)
+  }
+}
+
+.slash-top-fadein {
+  animation: slash-top-fadein-animation 0.3s;
+  -moz-animation: slash-top-fadein-animation 0.3s;
+  -webkit-animation: slash-top-fadein-animation 0.3s;
+  -o-animation: slash-top-fadein-animation 0.3s;
+}
+
+.slash-top-fadeout {
+  animation: slash-top-fadeout-animation 0.5s;
+  -moz-animation: slash-top-fadeout-animation 0.5s;
+  -webkit-animation: slash-top-fadeout-animation 0.5s;
+  -o-animation: slash-top-fadeout-animation 0.5s;
+  top: -50%;
+  opacity: 0;
+}
+
+@keyframes slash-top-fadein-animation {
+  0% {
+    top: -100%;
+  }
+}
+
+@keyframes slash-top-fadeout-animation {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    top: -100%;
+    opacity: 0;
+  }
 }
