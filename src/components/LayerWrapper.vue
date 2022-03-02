@@ -13,9 +13,11 @@
                     @minSize="doMinSize">
 
       </layer-header>
-      <layer-content v-slash-loading="{state:loadingState,text:loadingText}" ref="contentRef"
-                     :content="content.component" :props="content.props">
-      </layer-content>
+      <div class="content-box" v-slash-loading="{state:loadingState,text:loadingText}">
+        <layer-content ref="contentRef"
+                       :content="content.component" :props="content.props">
+        </layer-content>
+      </div>
       <layer-footer @btnClick="onBtnCLick" :id="options.id" :btnList="btnList" v-if="options.footer"></layer-footer>
     </layer-modal>
     <div class="mask" v-if="sWin" @click="doSwinToNormal">
@@ -211,13 +213,15 @@ export default defineComponent({
     this.doInit();
   },
   setup(props, ctx) {
-    console.log(props)
-    const {id, title, position, autoCloseTime, runMode, content} = toRefs(props.options);
+    console.log("第二次执行")
+    const {id, title, position, autoCloseTime, runMode, content} = reactive(props.options);
     const btnList = ref(reactive(props.options.btn));
-    console.log("当前模式:", runMode.value)
-    content.value.props["runMode"] = runMode.value;
+
+    if (runMode) {
+      content.props["runMode"] = runMode;
+    }
     const loadingText = ref("初始化加载");
-    const loadingState = ref(true);
+    const loadingState = ref(false);
     const wrapperRef = ref<InstanceType<any>>()
     const contentRef = ref<InstanceType<typeof LayerContent>>()
     const instanceRef = ref<any>(null);
@@ -225,7 +229,42 @@ export default defineComponent({
     const doTest = () => {
       console.log(11111111111111);
     }
+    /**
+     * 提交
+     * */
+    const doSubmit = () => {
+
+      const {targetRef} = toRefs(contentRef.value);
+      if (targetRef == null) {
+        console.error("目标表单为空")
+      }
+      if (targetRef.value.doSubmit) {
+        const result = targetRef.value.doSubmit();
+        if (LayerUtil.checkPromise(result)) {
+          return result;
+        } else {
+          return new Promise((resolve, reject) => {
+            if (typeof result == "object") {
+              return resolve(result);
+            } else {
+              reject(result);
+            }
+          })
+        }
+
+      }
+    }
+    const doUpdate = () => {
+      const {targetRef} = toRefs(contentRef.value);
+      if (targetRef == null) {
+        console.error("目标表单为空")
+      }
+      if (targetRef.value.doUpdate) {
+        return targetRef.value.doUpdate();
+      }
+    }
     const setLoadingState = (state: boolean, text?: string) => {
+      console.log("设置加载效果", state)
       for (let i = 0; i < btnList.value.length; i++) {
         const bt: OpenBtn = btnList.value[i] as OpenBtn;
         bt.curLoading = state;
@@ -263,7 +302,7 @@ export default defineComponent({
     }
     setTimeout(() => {
       loadingState.value = false;
-    }, 100)
+    }, 200)
     onMounted(() => {
       const {proxy} = useCurrentInstance();
       instanceRef.value = proxy;
@@ -281,7 +320,8 @@ export default defineComponent({
       content,
       loadingText,
       loadingState,
-      cancelLoading
+      cancelLoading,
+      doSubmit
     }
   }
 })
@@ -300,9 +340,5 @@ export default defineComponent({
   left: 0px;
 }
 
-.content-box {
-  padding: 10px;
-  box-sizing: border-box;
-}
 
 </style>

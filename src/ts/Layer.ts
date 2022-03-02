@@ -12,7 +12,7 @@ import {
     OpenConfigure,
     MessageConfigure,
     ConfirmConfigure,
-    FormConfigure
+    FormConfigure, SuccessDecideResult
 } from "@/ts/LayerConfigure"
 import Message from "@/components/contents/Message.vue"
 import LayerUtil from "@/ts/LayerUtil";
@@ -24,8 +24,11 @@ const defaultConfig: LayerConfigure = {
     max: true,
     min: true,
     loadingTime: 500,
-    autoCloseTime: 0
-} as LayerConfigure;
+    autoCloseTime: 0,
+    successDecide: function (msg: object) {
+
+    }
+} as unknown as LayerConfigure;
 
 class Layer {
     configure: LayerConfigure
@@ -39,8 +42,9 @@ class Layer {
         if (config == undefined) {
             this.configure = defaultConfig;
         } else {
-            this.configure = LayerUtil.mergeJson(defaultConfig, config) as LayerConfigure;
+            this.configure = LayerUtil.leftMergeJson(defaultConfig, config) as LayerConfigure;
         }
+        console.log(this.configure.successDecide)
     }
 
     initDom(): string {
@@ -77,8 +81,8 @@ class Layer {
                         name: "取消",
                         className: "",
                         loading: true,
-                        callback: (data: any) => {
-                            console.log()
+                        callback: (instance, data) => {
+                            Layer.close(instance.value.id);
                         }
                     },
                     {
@@ -87,11 +91,18 @@ class Layer {
                         loading: true,
                         loadingText: "正在提交中",
                         callback: (instance, data) => {
-                            setTimeout(() => {
-                                console.log("取消加载");
+                            instance.value.doSubmit().then((msg) => {
+                                const result: SuccessDecideResult = this.configure.successDecide(msg)
+                                this.autoInfo(result);
+                                if (result.result) {
+                                    Layer.close(instance.value.id);
+                                }
+                                resolve(result.data);
+                            }).catch(msg => {
+                                console.error("自动提交失败", msg);
+                            }).finally(() => {
                                 instance.value.cancelLoading();
-                            }, 2100)
-
+                            })
                         }
                     }]
             } as FormConfigure
@@ -99,21 +110,85 @@ class Layer {
         })
     }
 
-    /**
-     * 更新表单
-     * @param config
-     */
-    updateForm(config: FormConfigure): string | void {
-
+    autoInfo(msg: SuccessDecideResult): void {
+        if (msg.result) {
+            this.success(msg.msg);
+        } else {
+            this.error(msg.msg);
+        }
     }
 
     /**
-     * 读取表单
+     * 新增表单
      * @param config
      */
-    readForm(config: FormConfigure): string | void {
-
+    updateForm(config: FormConfigure): string | Promise<any> {
+        let _that = this;
+        return new Promise((resolve, reject) => {
+            let formConfig = {
+                ...config,
+                runMode: 'update',
+                btn: [
+                    {
+                        name: "取消",
+                        className: "",
+                        loading: true,
+                        callback: (instance, data) => {
+                            Layer.close(instance.value.id);
+                        }
+                    },
+                    {
+                        name: "保存",
+                        className: "btn-primary",
+                        loading: true,
+                        loadingText: "正在修改中",
+                        callback: (instance, data) => {
+                            instance.value.doSubmit().then((msg) => {
+                                const result: SuccessDecideResult = this.configure.successDecide(msg)
+                                this.autoInfo(result);
+                                if (result.result) {
+                                    Layer.close(instance.value.id);
+                                }
+                                resolve(result.data);
+                            }).catch(msg => {
+                                console.error("自动提交失败", msg);
+                            }).finally(() => {
+                                instance.value.cancelLoading();
+                            })
+                        }
+                    }]
+            } as FormConfigure
+            _that.form(formConfig);
+        })
     }
+
+
+
+    /**
+     * 新增表单
+     * @param config
+     */
+    readForm(config: FormConfigure): string | Promise<any> {
+        let _that = this;
+        return new Promise((resolve, reject) => {
+            let formConfig = {
+                ...config,
+                runMode: 'read',
+                btn: [
+                    {
+                        name: "确定",
+                        className: "btn-primary",
+                        loading: true,
+                        loadingText: "正在修改中",
+                        callback: (instance, data) => {
+                            Layer.close(instance.value.id);
+                        }
+                    }]
+            } as FormConfigure
+            _that.form(formConfig);
+        })
+    }
+
 
     form(config: FormConfigure): string | void {
         let formConfig = {
@@ -146,7 +221,7 @@ class Layer {
         return this.message(conf);
     }
 
-    error(config: MessageConfigure): void {
+    error(config: MessageConfigure | string): void {
         let conf: any = {} as MessageConfigure;
         conf.iconColor = "#ff0000";
         conf.icon = "&#xe633;"

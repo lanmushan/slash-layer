@@ -11,7 +11,8 @@ export default defineComponent({
                 ref: "targetRef",
                 ...props
             });
-            return createVNode("div", {class: "content-box"}, [vNode]);
+            // return createVNode("div", {class: "content-box"}, [vNode]);
+            return vNode;
         },
         props: {
             content: {
@@ -25,16 +26,17 @@ export default defineComponent({
             console.log("执行setup")
             const {props, content} = toRefs(p);
             const targetRef = ref<InstanceType<any>>()
-            const test = () => {
-                console.log(targetRef)
-                console.log(targetRef.value);
-                console.log(JSON.stringify(targetRef.value.form))
-                console.log("哈哈哈");
+            const doSubmit = () => {
+                console.log("哈哈哈")
+                if (targetRef.value.doSubmit) {
+                    return targetRef.value.doSubmit();
+                }
+
             }
             return {
                 props,
                 content,
-                test,
+                doSubmit,
                 targetRef
             }
         }

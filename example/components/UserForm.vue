@@ -1,5 +1,5 @@
 <template>
-  <div>当前模式:{{runMode}} {{msg}}</div>
+  <div>当前模式:{{ runMode }} {{ msg }}</div>
   <el-form ref="formRef" :model="form" label-width="120px">
     <el-form-item label="Activity name">
       <el-input v-model="form.name"></el-input>
@@ -74,6 +74,7 @@
 <script lang="ts">
 import {defineComponent, reactive} from "vue";
 import HelloWorld from "./HelloWorld"
+import {createUser} from "../apis/UserApi"
 
 export default defineComponent({
   name: 'UserForm',
@@ -85,8 +86,8 @@ export default defineComponent({
       type: String,
       default: "哈哈"
     },
-    runMode:{
-      type:String
+    runMode: {
+      type: String
     }
   },
   setup() {
@@ -101,11 +102,17 @@ export default defineComponent({
       resource: '',
       desc: '',
     })
-
-    const onSubmit = () => {
-      console.log('submit!')
+    const doSubmit = async () => {
+      const res = await createUser(form);
+      return res;
     }
-    return {form, onSubmit}
+    // const doSubmit = () => {
+    //   return form;
+    // }
+    const doUpdate = () => {
+      console.log('doUpdate')
+    }
+    return {form, doSubmit}
   }
 })
 </script>

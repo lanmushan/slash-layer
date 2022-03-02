@@ -21,22 +21,32 @@ export interface LayerConfigure {
     noFunc?: string | undefined,
     /*加载效果时间*/
     loadingTime: number,
-}
 
+    /**
+     * 成功失败判断函数
+     * @param msg
+     */
+    successDecide(msg: any): SuccessDecideResult
+}
+export interface SuccessDecideResult{
+    result:boolean,
+    msg:string,
+    data?:object
+}
 export interface OptionsContent {
     component: object,
     props: PropType<any>
 }
 
 export interface OpenConfigure extends LayerConfigure {
-    id?: string,
+    id: string,
     position?: LayerPosition,
     content: OptionsContent,
     header?: boolean,
     footer: boolean,
     btn: Array<OpenBtn>
     autoCloseTime?: number
-
+    runMode?:string
     closeCallBack(id?: string, data?: any): string;
 }
 
@@ -44,10 +54,11 @@ export interface OpenBtn {
     name: string,
     className: string,
     data: any,
-    loading:boolean,
-    loadingText:string,
-    curLoading?:boolean|null
-    callback(LayerWrapper, data?:any): string;
+    loading: boolean,
+    loadingText: string,
+    curLoading?: boolean | null
+
+    callback(LayerWrapper, data?: any): string;
 }
 
 export interface MessageConfigure {
@@ -64,6 +75,6 @@ export interface ConfirmConfigure {
     data?: any
 }
 
-export interface FormConfigure extends OpenConfigure{
-    runMode?:string
+export interface FormConfigure extends OpenConfigure {
+    runMode?: string
 }
