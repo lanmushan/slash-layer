@@ -18,12 +18,13 @@ import Message from "@/components/contents/Message.vue"
 import LayerUtil from "@/ts/LayerUtil";
 import {createCommentVNode, createElementVNode} from "@vue/runtime-core";
 import {loadingDirective} from "@/directives/LoadingDirective";
+import {layer_id_prefix, layer_mask_prefix} from "@/consts/LayerConst";
 
 const defaultConfig: LayerConfigure = {
     title: "张三",
     max: true,
     min: true,
-    loadingTime: 500,
+    loadingTime: 0,
     autoCloseTime: 0,
     successDecide: function (msg: object) {
 
@@ -47,11 +48,15 @@ class Layer {
         console.log(this.configure.successDecide)
     }
 
-    initDom(): string {
-        const div = document.createElement("div");
+    initDom(initClass:string|undefined): string {
         const id = LayerUtil.createId();
+        const maskDiv: HTMLElement = document.createElement("div");
+        maskDiv.className = "slash-layer-mask"
+        maskDiv.id = `${layer_mask_prefix}_${id}`;
+        const div = document.createElement("div");
         div.id = id;
-        div.className = "slash-layer";
+        div.className = `slash-layer ${initClass?initClass:""}`;
+        maskDiv.appendChild(div);
         document.body.appendChild(div);
         return id;
 
@@ -163,7 +168,6 @@ class Layer {
     }
 
 
-
     /**
      * 新增表单
      * @param config
@@ -197,7 +201,8 @@ class Layer {
             min: true,
             footer: true,
             header: true,
-            autoCloseTime: 2000,
+            loadingTime: 200,
+            autoCloseTime: 0,
             position: {
                 width: 800,
                 top: 80,
@@ -293,16 +298,19 @@ class Layer {
     }
 
     message(config: MessageConfigure): void {
+        let width=config.msg.length*20>200?config.msg.length*20:200;
+
         const openConfig = {
             title: config.title,
             max: false,
             min: false,
             footer: false,
             header: false,
+            className:"layer-msg",
             autoCloseTime: 2000,
             position: {
-                width: 300,
-                top: 120,
+                top: 40,
+                width:width
             },
             content: {
                 component: Message,
@@ -314,7 +322,7 @@ class Layer {
 
     open(config: OpenConfigure): void {
         // eslint-disable-next-line no-undef
-        const id = this.initDom();
+        const id = this.initDom(config.className);
         const options: OpenConfigure = LayerUtil.mergeJson(config, this.configure) as OpenConfigure;
         options.id = id;
         options["content"] = config.content;
@@ -342,16 +350,22 @@ class Layer {
     }
 
     static close(id: string): void {
-        console.log(id);
-        const wrapperRef = ref<HTMLElement | null>(null);
-        wrapperRef.value = document.getElementById(id);
-        if (wrapperRef.value) {
-            wrapperRef.value.classList.add("slash-top-fadeout");
+        const layer = document.getElementById(id);
+        const mask = document.getElementById(`${layer_mask_prefix}_${id}`)
+        if (mask) {
+            mask.style.background = "transparent";
+        }
+        if (layer) {
+            layer.classList.add("slash-top-fadeout");
             setTimeout(() => {
-                if (wrapperRef.value) {
-                    wrapperRef.value.remove();
+                if (layer) {
+                    layer.remove();
                 }
-            }, 1000)
+                if (mask) {
+                    mask.remove();
+                }
+
+            }, 500)
         }
     }
 

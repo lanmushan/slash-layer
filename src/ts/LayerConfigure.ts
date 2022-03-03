@@ -46,7 +46,8 @@ export interface OpenConfigure extends LayerConfigure {
     footer: boolean,
     btn: Array<OpenBtn>
     autoCloseTime?: number
-    runMode?:string
+    runMode?:string,
+    className:string|undefined
     closeCallBack(id?: string, data?: any): string;
 }
 

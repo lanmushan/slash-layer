@@ -52,7 +52,7 @@ export default {
       this.$layer.error("错误信息");
     },
     success2() {
-      this.$layer.success("我是第二种参数");
+      this.$layer.success("我是第二我是第二种参数我是第二种参数我是第二种参数种参数");
     },
     info() {
       this.$layer.info("哈哈哈");

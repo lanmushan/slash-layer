@@ -13,12 +13,12 @@ let config = {
     successDecide(msg) {
         if (msg.code == 200) {
             return {
-                msg: msg.msg, result: false,data:msg.data
+                msg: msg.msg, result: true, data: msg.data
             }
         } else {
             console.debug("失败");
             return {
-                msg: msg.msg, result: false,data:msg.data
+                msg: msg.msg, result: false, data: msg.data
             }
         }
     }

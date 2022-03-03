@@ -1,8 +1,13 @@
 <template>
   <div class="message-wrapper">
     <div class="success msg-box">
-      <span class=" icon iconfont" :style="{color:iconColor}" v-if="icon" v-html="icon"></span>
-      <span class="msg">{{ msg }}</span>
+      <div class="left-box">
+        <span class=" icon iconfont" :style="{color:iconColor}" v-if="icon" v-html="icon"></span>
+      </div>
+      <div class="right-box">
+
+        <span class="msg">{{ msg }}</span>
+      </div>
     </div>
   </div>
 </template>
@@ -34,23 +39,39 @@ export default defineComponent({
 
 <style scoped lang="less">
 .message-wrapper {
-  box-sizing: border-box;
-  text-align: center;
-  padding: 10px;
-
   .success {
-    .icon {
-      padding: 0px;
-      margin-right: 10px;
-      line-height: 40px;
+    display: block;
+    .left-box {
+      display: inline-block;
+      text-align: right;
+      width: 40px;
+      box-sizing: border-box;
+      vertical-align: top;
+      .icon {
+        padding: 0px;
+        font-size: 40px;
+        clear: both;
+      }
+    }
+
+    .right-box {
+      display: inline-block;
+      height: 40px;
+      vertical-align: top;
+      padding-left: 10px;
+      box-sizing: border-box;
+      width: calc(100% - 40px);
     }
 
     .msg {
       margin-top: 10px;
       color: #6a6767;
-      line-height: 40px;
-
       font-size: 16px;
+      height: 100%;
+      line-height: 40px;
+      vertical-align: middle;
+
+
     }
   }
 }

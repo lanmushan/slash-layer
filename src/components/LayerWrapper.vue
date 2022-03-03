@@ -20,7 +20,7 @@
       </div>
       <layer-footer @btnClick="onBtnCLick" :id="options.id" :btnList="btnList" v-if="options.footer"></layer-footer>
     </layer-modal>
-    <div class="mask" v-if="sWin" @click="doSwinToNormal">
+    <div class="s-win" v-if="sWin" @click="doSwinToNormal">
     </div>
   </div>
 </template>
@@ -214,14 +214,14 @@ export default defineComponent({
   },
   setup(props, ctx) {
     console.log("第二次执行")
-    const {id, title, position, autoCloseTime, runMode, content} = reactive(props.options);
+    const {id, title, position, autoCloseTime, runMode, content, loadingTime} = reactive(props.options);
     const btnList = ref(reactive(props.options.btn));
 
     if (runMode) {
       content.props["runMode"] = runMode;
     }
     const loadingText = ref("初始化加载");
-    const loadingState = ref(false);
+    const loadingState = ref(loadingTime == 0 ? false : true);
     const wrapperRef = ref<InstanceType<any>>()
     const contentRef = ref<InstanceType<typeof LayerContent>>()
     const instanceRef = ref<any>(null);
@@ -302,7 +302,13 @@ export default defineComponent({
     }
     setTimeout(() => {
       loadingState.value = false;
-    }, 200)
+    }, loadingTime);
+    if (autoCloseTime && autoCloseTime > 0) {
+      setTimeout(() => {
+        Layer.close(id);
+      }, autoCloseTime)
+    }
+
     onMounted(() => {
       const {proxy} = useCurrentInstance();
       instanceRef.value = proxy;
@@ -331,7 +337,7 @@ export default defineComponent({
 @import "../css/layer.less";
 @import "../css/icon/iconfont/iconfont.css";
 
-.mask {
+.s-win {
   position: absolute;
   height: 100%;
   width: 100%;

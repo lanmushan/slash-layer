@@ -1,9 +1,20 @@
-.slash-layer {
+.slash-layer-mask{
   position: fixed;
+  top: -1px;
+  left: 0px;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0,0,0,0.35);
+}
+.layer-msg{
+  width: fit-content;
+  margin: 0px auto;
+}
+.slash-layer {
+  position: absolute;
   margin: 0 auto;
   top: 0px;
   left: 0px;
-  width: 800px;
   background: red;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -11,15 +22,13 @@
   //transform: scale(0.2);
   transform-origin: 0px 0px; // 定义缩放原点,相对于左上角的距离x、y，单位px
   box-sizing: border-box;
-  border-radius: 10px;
-
+  border-radius: 5px;
   .content-box {
     box-sizing: border-box;
     padding: 10px;
     position: relative;
   }
 }
-
 .slash-loading {
   background: red;
   height: 100%;
