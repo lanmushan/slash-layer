@@ -70,8 +70,6 @@ export default defineComponent({
       height: 100%;
       line-height: 40px;
       vertical-align: middle;
-
-
     }
   }
 }

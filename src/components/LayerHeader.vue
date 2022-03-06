@@ -1,5 +1,5 @@
 <template>
-  <div class="header" @dblclick.self="onToggleSize" @mousedown="onMouseDown">
+  <div @dblclick.self="onToggleSize" @mousedown="onMouseDown">
     <span class="title">
       {{ title }}</span>
     <span class="header-tool">
@@ -106,48 +106,6 @@ export default defineComponent({
 </script>
 
 <style scoped lang="less">
-.header {
-  min-height: 30px;
-  width: 100%;
-  padding: 10px;
-  box-sizing: border-box;
-  border-bottom: 1px solid #e4e5e5;
-  margin: 0;
-  cursor: move;
-
-  .title {
-    color: #000000d9;
-    font-weight: 500;
-    font-size: 16px;
-    line-height: 22px;
-    font-weight: bold;
-    word-wrap: break-word;
-  }
-
-  .header-tool {
-    float: right;
-
-    .iconfont {
-      margin-left: 10px;
-      display: inline-block;
-      width: 15px;
-      color: #898787;
-      transition: all .1s;
-      -webkit-transition: all .1s; /* Safari */
-    }
-
-    .iconfont:hover {
-      cursor: pointer;
-      font-size: 18px;
-      transform: scale(1.5);
-      -ms-transform: scale(1.1); /* IE 9 */
-      -moz-transform: scale(1.1); /* Firefox */
-      -webkit-transform: scale(1.1); /* Safari 和 Chrome */
-      -o-transform: scale(1.1);
-      color: #010e20;
-    }
-  }
-}
 
 
 </style>

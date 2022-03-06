@@ -1,15 +1,12 @@
 import {createApp} from 'vue'
 import App from './App.vue'
 import SlashLayer from '../src/index.ts';
-import {LayerConfigure} from "../src/ts/LayerConfigure";
 import ElementPlus from 'element-plus';
 import 'element-plus/dist/index.css';
-import {SuccessDecideResult} from "../src/ts/LayerConfigure";
 
 let app = createApp(App);
 app.config.globalProperties.$systemName = '用户管理系统'
 let config = {
-    name: "测试",
     successDecide(msg) {
         if (msg.code == 200) {
             return {
@@ -23,7 +20,6 @@ let config = {
         }
     }
 }
-app.use(ElementPlus,)
-
-app.config.globalProperties.$layer = new SlashLayer(config, app);
+app.use(ElementPlus)
+app.use(SlashLayer,config)
 app.mount('#app')

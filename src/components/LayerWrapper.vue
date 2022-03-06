@@ -1,25 +1,22 @@
 <template>
-  <div ref="wrapperRef" class="layer-wrapper">
-    <layer-modal @mousedown="onTop">
-      <layer-header :title="options.title"
-                    :max="options.max"
-                    :info="options.info"
-                    :id="options.id"
-                    :min="options.min"
-                    :drag="drag"
-                    v-if="options.header"
-                    @close="onClose"
-                    @toggleSize="onToggleSize"
-                    @minSize="doMinSize">
+  <div ref="wrapperRef" @mousedown="onTop" class="layer-wrapper" :class="options.className">
+    <layer-header class="layer-header" :title="options.title"
+                  :max="options.max"
+                  :info="options.info"
+                  :id="options.id"
+                  :min="options.min"
+                  :drag="drag"
+                  v-if="header"
+                  @close="onClose"
+                  @toggleSize="onToggleSize"
+                  @minSize="doMinSize">
 
-      </layer-header>
-      <div class="content-box" v-slash-loading="{state:loadingState,text:loadingText}">
-        <layer-content ref="contentRef"
-                       :content="content.component" :props="content.props">
-        </layer-content>
-      </div>
-      <layer-footer @btnClick="onBtnCLick" :id="options.id" :btnList="btnList" v-if="options.footer"></layer-footer>
-    </layer-modal>
+    </layer-header>
+    <div class="layer-content" :style="{height:contentHeight}" v-slash-loading="{state:loadingState,text:loadingText}">
+      <layer-content ref="contentRef" :content="content.component" :props="content.props">
+      </layer-content>
+    </div>
+    <layer-footer @btnClick="onBtnCLick" :id="options.id" :btnList="btnList" v-if="footer"></layer-footer>
     <div class="s-win" v-if="sWin" @click="doSwinToNormal">
     </div>
   </div>
@@ -187,6 +184,9 @@ export default defineComponent({
     },
     onClose() {
       Layer.close(this.id);
+      if (this.$props.options.closeCallBack) {
+        this.$props.options.closeCallBack();
+      }
     },
     onTop() {
       let elms = document.querySelectorAll(".slash-layer")
@@ -200,6 +200,7 @@ export default defineComponent({
     },
     doInit() {
       if (this.$props.options.position) {
+        console.log(this.$props.options.position)
         this.setPosition(this.$props.options.position as LayerPosition)
       }
     },
@@ -214,18 +215,25 @@ export default defineComponent({
   },
   setup(props, ctx) {
     console.log("第二次执行")
-    const {id, title, position, autoCloseTime, runMode, content, loadingTime} = reactive(props.options);
+    const {id, title, position, autoCloseTime, runMode, content, loadingTime, footer, header} = toRefs(props.options);
     const btnList = ref(reactive(props.options.btn));
-
+    if (!btnList.value) {
+      footer.value = false;
+    }
     if (runMode) {
-      content.props["runMode"] = runMode;
+      content.value.props["runMode"] = runMode;
     }
     const loadingText = ref("初始化加载");
     const loadingState = ref(loadingTime == 0 ? false : true);
     const wrapperRef = ref<InstanceType<any>>()
     const contentRef = ref<InstanceType<typeof LayerContent>>()
     const instanceRef = ref<any>(null);
-
+    const contentHeight = ref<number | string>("calc(100% - 80px)");
+    if (footer.value === false && header.value === false) {
+      contentHeight.value = "100%"
+    } else if (footer.value === false || header.value === false) {
+      contentHeight.value = "calc(100% - 40px)"
+    }
     const doTest = () => {
       console.log(11111111111111);
     }
@@ -233,7 +241,6 @@ export default defineComponent({
      * 提交
      * */
     const doSubmit = () => {
-
       const {targetRef} = toRefs(contentRef.value);
       if (targetRef == null) {
         console.error("目标表单为空")
@@ -303,12 +310,6 @@ export default defineComponent({
     setTimeout(() => {
       loadingState.value = false;
     }, loadingTime);
-    if (autoCloseTime && autoCloseTime > 0) {
-      setTimeout(() => {
-        Layer.close(id);
-      }, autoCloseTime)
-    }
-
     onMounted(() => {
       const {proxy} = useCurrentInstance();
       instanceRef.value = proxy;
@@ -319,11 +320,14 @@ export default defineComponent({
       title,
       wrapperRef,
       position,
+      footer,
       doTest,
       contentRef,
       onBtnCLick,
+      header,
       btnList,
       content,
+      contentHeight,
       loadingText,
       loadingState,
       cancelLoading,

@@ -12,62 +12,44 @@ import {
     OpenConfigure,
     MessageConfigure,
     ConfirmConfigure,
-    FormConfigure, SuccessDecideResult
+    FormConfigure, SuccessDecideResult,
+    LayerGlobalConfigure, OptionsContent, ImagesConfigure
 } from "@/ts/LayerConfigure"
 import Message from "@/components/contents/Message.vue"
+import Welcome from "@/components/contents/Welcome.vue"
+
 import LayerUtil from "@/ts/LayerUtil";
 import {createCommentVNode, createElementVNode} from "@vue/runtime-core";
 import {loadingDirective} from "@/directives/LoadingDirective";
-import {layer_id_prefix, layer_mask_prefix} from "@/consts/LayerConst";
-
-const defaultConfig: LayerConfigure = {
-    title: "张三",
-    max: true,
-    min: true,
-    loadingTime: 0,
-    autoCloseTime: 0,
-    successDecide: function (msg: object) {
-
-    }
-} as unknown as LayerConfigure;
+import OpenConfigureUtil from "@/ts/OpenConfigureUtil"
+import {defaultLayerGlobalConfigure, layer_id_prefix, layer_mask_prefix, layer_root_prefix} from "@/consts/LayerConst";
+import Images from "@/components/contents/Images.vue";
 
 class Layer {
-    configure: LayerConfigure
+    configure: LayerGlobalConfigure
     static wrapId: string = "slash_layer";
     elm: HTMLElement | null | undefined;
     app: App | undefined
 
-    constructor(config?: LayerConfigure, app?: App) {
+    constructor(config?: LayerGlobalConfigure, app?: App) {
         this.app = app;
         loadingDirective(app);
         if (config == undefined) {
-            this.configure = defaultConfig;
+            this.configure = defaultLayerGlobalConfigure;
         } else {
-            this.configure = LayerUtil.leftMergeJson(defaultConfig, config) as LayerConfigure;
+            this.configure = defaultLayerGlobalConfigure;
+            //合并内置配置
+            //  this.configure = LayerUtil.leftMergeJson(defaultLayerGlobalConfigure, config) as LayerGlobalConfigure;
         }
-        console.log(this.configure.successDecide)
     }
 
-    initDom(initClass:string|undefined): string {
-        const id = LayerUtil.createId();
-        const maskDiv: HTMLElement = document.createElement("div");
-        maskDiv.className = "slash-layer-mask"
-        maskDiv.id = `${layer_mask_prefix}_${id}`;
-        const div = document.createElement("div");
-        div.id = id;
-        div.className = `slash-layer ${initClass?initClass:""}`;
-        maskDiv.appendChild(div);
-        document.body.appendChild(div);
-        return id;
-
-    }
 
     /**
      * 模态框
      * @param config
      */
     modal(config: OpenConfigure): void {
-
+        this.open(config);
     }
 
 
@@ -252,24 +234,36 @@ class Layer {
         this.message(conf);
     }
 
-    confirm(config: ConfirmConfigure): Promise<any> {
+    confirm(config: ConfirmConfigure | string): Promise<any> {
         let _that = this;
-        // @ts-ignore
+        let tempConfig: ConfirmConfigure | null = null;
+        if (typeof config === "object") {
+            tempConfig = config;
+        } else if (config && typeof config === "string") {
+            tempConfig = {} as ConfirmConfigure;
+            tempConfig.msg = config;
+        }
+        if (tempConfig != null && !tempConfig.title) {
+            tempConfig.title = "提示";
+        }
         return new Promise(function (resolve, reject) {
             const openConfig = {
-                title: config.title,
+                title: tempConfig?.title,
                 max: false,
                 min: false,
                 footer: true,
                 header: true,
                 autoCloseTime: 0,
+                loadingTime: 0,
+                mask: true,
                 position: {
                     width: 300,
-                    top: 120,
+                    top: 80,
+                    height: 130
                 },
                 content: {
                     component: Message,
-                    props: config
+                    props: tempConfig
                 },
                 closeCallBack: (id: string, data: any) => {
                     Layer.close(id);
@@ -279,16 +273,17 @@ class Layer {
                     {
                         name: "取消",
                         className: "",
-                        callback: (data: any) => {
-                            console.log("得到数据");
+                        callback: (instance, data) => {
+                            Layer.close(instance.value.id);
                             reject(data);
                         }
+
                     },
                     {
                         name: "确认",
                         className: "btn-primary",
-                        callback: (data: any) => {
-                            console.log("得到数据");
+                        callback: (instance, data) => {
+                            Layer.close(instance.value.id);
                             resolve(data);
                         }
                     }]
@@ -297,20 +292,38 @@ class Layer {
         })
     }
 
-    message(config: MessageConfigure): void {
-        let width=config.msg.length*20>200?config.msg.length*20:200;
+    images(config: ImagesConfigure): void {
+        const openConfig = {
+            title: "",
+            max: false,
+            min: false,
+            footer: false,
+            header: true,
+            className: "layer-images",
+            autoCloseTime: 0,
+            position: "full",
+            content: {
+                component: Images,
+                props: config
+            }
+        } as unknown as OpenConfigure
+        this.open(openConfig);
+    }
 
+    message(config: MessageConfigure): void {
+        let width = config.msg.length * 20 > 200 ? config.msg.length * 20 : 200;
         const openConfig = {
             title: config.title,
             max: false,
             min: false,
             footer: false,
             header: false,
-            className:"layer-msg",
+            className: "layer-msg",
             autoCloseTime: 2000,
             position: {
                 top: 40,
-                width:width
+                width: width,
+                height: 50
             },
             content: {
                 component: Message,
@@ -320,28 +333,44 @@ class Layer {
         this.open(openConfig);
     }
 
-    open(config: OpenConfigure): void {
-        // eslint-disable-next-line no-undef
-        const id = this.initDom(config.className);
-        const options: OpenConfigure = LayerUtil.mergeJson(config, this.configure) as OpenConfigure;
-        options.id = id;
-        options["content"] = config.content;
-        if (options.position) {
-            options.position = this.getRelativePosition(options.position);
+    createHtmlDom(config: OpenConfigure): void {
+        let rootDiv: HTMLElement = document.createElement("div");
+        if (config.mask) {
+            rootDiv.id = `${layer_root_prefix}${config.id}`
+            rootDiv.className = "slash-layer-mask";
+            const layerDiv = document.createElement("div");
+            layerDiv.id = config.id;
+            layerDiv.className = `slash-layer`;
+            rootDiv.appendChild(layerDiv);
+
+        } else {
+            rootDiv = document.createElement("div");
+            rootDiv.id = config.id;
+            rootDiv.className = `slash-layer`;
         }
-        const HelloWorld = defineComponent({
-            render() {
-                return h(LayerWrapper, {options: options})
-            }
+
+        document.body.appendChild(rootDiv);
+    }
+
+    open(config: OpenConfigure): void {
+        console.log("初始参数:", JSON.stringify(config));
+        const options: OpenConfigure = this.getOpenConfigure(config);
+        console.log("加工后参数:", options);
+        options.id = `${layer_id_prefix}_${LayerUtil.createId()}`;
+        this.createHtmlDom(options);
+        const elm: HTMLElement | null = document.getElementById(options.id);
+        const {el, vNode} = Mount(LayerWrapper, {
+            props: {
+                options: options,
+                class: options.theme
+            }, app: this.app, elm
         })
-
-
-        // @ts-ignore
-
-        const {el, vNode} = Mount(HelloWorld, {props: {}, app: this.app,})
-        // @ts-ignore
-        document.getElementById(id).appendChild(el);
-        console.log(vNode);
+        if (options.autoCloseTime && options.autoCloseTime > 0) {
+            setTimeout(() => {
+                console.log("自动关闭吧");
+                Layer.close(options.id);
+            }, options.autoCloseTime)
+        }
         return vNode;
     }
 
@@ -351,7 +380,7 @@ class Layer {
 
     static close(id: string): void {
         const layer = document.getElementById(id);
-        const mask = document.getElementById(`${layer_mask_prefix}_${id}`)
+        const mask = document.getElementById(`${layer_root_prefix}${id}`)
         if (mask) {
             mask.style.background = "transparent";
         }
@@ -367,6 +396,57 @@ class Layer {
 
             }, 500)
         }
+    }
+
+    private copyOpenConfigure(openConfigure: OpenConfigure): OpenConfigure {
+        let content = openConfigure.content;
+        let currentConfig = JSON.parse(JSON.stringify(openConfigure)) as OpenConfigure;
+        currentConfig.content = content;
+        currentConfig.btn = openConfigure.btn;
+        currentConfig.closeCallBack = openConfigure.closeCallBack;
+        return currentConfig;
+    }
+
+    private getOpenConfigure(openConfigure: OpenConfigure): OpenConfigure {
+        let currentConfig = this.copyOpenConfigure(openConfigure) as OpenConfigure;
+        const defConfigure = this.configure;
+        if (!currentConfig.title) {
+            currentConfig.title = defConfigure.title
+        }
+        if (typeof currentConfig.header === 'undefined') {
+            currentConfig.header = defConfigure.header
+        }
+        if (!currentConfig.title) {
+            currentConfig.title = defConfigure.title
+        }
+
+        if (typeof currentConfig.max === 'undefined') {
+            currentConfig.max = defConfigure.max;
+        }
+        if (typeof currentConfig.min === 'undefined') {
+            currentConfig.min = defConfigure.min;
+        }
+        if (!currentConfig.footer) {
+            currentConfig.footer = defConfigure.footer;
+        }
+        if (!currentConfig.autoCloseTime) {
+            currentConfig.autoCloseTime = defConfigure.autoCloseTime
+        }
+
+        if (typeof currentConfig.loadingTime === 'undefined') {
+            currentConfig.loadingTime = defConfigure.loadingTime
+        }
+        if (typeof currentConfig.content === 'undefined') {
+            currentConfig.content = {
+                component: Welcome
+            } as OptionsContent
+        }
+        if (typeof currentConfig.theme === "undefined") {
+            currentConfig.theme = this.configure.theme;
+        }
+        //处理坐标问题
+        currentConfig.position = OpenConfigureUtil.getOpenPosition(currentConfig.position, this.configure);
+        return currentConfig;
     }
 
     private getRelativePosition(position: LayerPosition): LayerPosition {

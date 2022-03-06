@@ -57,6 +57,31 @@
         <el-checkbox label="Simple brand exposure" name="type"></el-checkbox>
       </el-checkbox-group>
     </el-form-item>
+    <el-form-item label="Activity type">
+      <el-checkbox-group v-model="form.type">
+        <el-checkbox label="Online activities" name="type"></el-checkbox>
+        <el-checkbox label="Promotion activities" name="type"></el-checkbox>
+        <el-checkbox label="Offline activities" name="type"></el-checkbox>
+        <el-checkbox label="Simple brand exposure" name="type"></el-checkbox>
+      </el-checkbox-group>
+    </el-form-item>
+    <el-form-item label="Activity type">
+      <el-checkbox-group v-model="form.type">
+        <el-checkbox label="Online activities" name="type"></el-checkbox>
+        <el-checkbox label="Promotion activities" name="type"></el-checkbox>
+        <el-checkbox label="Offline activities" name="type"></el-checkbox>
+        <el-checkbox label="Simple brand exposure" name="type"></el-checkbox>
+      </el-checkbox-group>
+    </el-form-item>
+    <p>dsaklfajslj</p>
+    <p>dsaklfajslj</p>
+
+    <p>dsaklfajslj</p>
+
+    <p>dsaklfajslj</p>
+
+    <p>dsaklfajslj</p>
+
 
     <el-form-item label="Resources">
       <el-radio-group v-model="form.resource">

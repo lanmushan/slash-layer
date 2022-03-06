@@ -19,7 +19,7 @@ export default class LayerUtil {
     }
 
     static getViewPortWidth(): number {
-        return document.documentElement.clientWidth || document.body.clientWidth;
+        return document.documentElement.clientWidth ||document.body.offsetWidth|| document.body.clientWidth;
     }
 
     static getViewPortHeight(): number {
