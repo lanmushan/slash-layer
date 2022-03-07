@@ -1,8 +1,15 @@
 {
   "name": "slash-layer",
-  "version": "0.1.0",
-  "main": "dist/cyui.umd.min.js",
-  "private": true,
+  "version": "1.0.0",
+  "main": "dist/slash-layer.umd.min.js",
+  "description": "基于VUE3的模态框插件",
+  "keyword": [
+    "vue3",
+    "layer",
+    "弹出框",
+    "模态框"
+  ],
+  "private": false,
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
@@ -11,13 +18,13 @@
     "doc": "docsify serve docs"
   },
   "dependencies": {
-    "7.0.0": "^1.0.1",
-    "axios": "^0.26.0",
-    "core-js": "^3.6.5",
-    "less-loader": "^7.3.0",
-    "vue": "^3.0.0"
   },
   "devDependencies": {
+    "7.0.0": "^1.0.1",
+    "core-js": "^3.6.5",
+    "vue": "^3.0.0",
+    "axios": "^0.26.0",
+    "less-loader": "^7.3.0",
     "@typescript-eslint/eslint-plugin": "^5.10.1",
     "@typescript-eslint/parser": "^5.10.1",
     "@vue/cli-plugin-babel": "^4.5.15",
