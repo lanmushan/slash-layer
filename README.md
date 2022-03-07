@@ -7,14 +7,14 @@
 ![img](http://lmscms.oss-cn-beijing.aliyuncs.com/slash-layer/images/form.png)
 ![img](https://lmscms.oss-cn-beijing.aliyuncs.com/slash-layer/images/demo.png)
 
-
 ## 项目特点
-
 1. 为了快速开发后台管理系统
 2. 后期适配移动端和指令式弹框
+## 源码
+[github](https://github.com/lanmushan/slash-layer)
+[gitee](https://gitee.com/lanmushan/slash-layer)
 
 ## 依赖
-
 ```json
 {
   "core-js": "^3.6.5",
