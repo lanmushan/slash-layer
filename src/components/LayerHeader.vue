@@ -43,11 +43,9 @@ export default defineComponent({
   emits: ["close", "toggleSize", "minSize"],
   methods: {
     onClose() {
-      console.log("关闭")
       this.$emit("close");
     },
     onToggleSize() {
-      console.log("切换大小")
       this.$emit("toggleSize");
     },
     onMinSize() {
@@ -71,10 +69,8 @@ export default defineComponent({
       elm.classList.remove("slash-trans")
     },
     onMouseMove(e) {
-      console.log("鼠标坐标:{}", e.clientX, e.clientY)
       const offsetX = e.clientX - this.move.startX
       const offsetY = e.clientY - this.move.startY
-      console.log("偏移:{}", offsetX, offsetY)
       if (this.moved) {
         const elm: HTMLElement | null = document.getElementById(this.id);
         if (elm) {
@@ -83,7 +79,6 @@ export default defineComponent({
           let maxTop = (window.innerHeight - elm.offsetHeight);
           let maxLeft = (window.innerWidth - elm.offsetWidth);
 
-          console.log("屏幕高度:", maxTop);
           curTop = curTop > 0 ? curTop : 0;
           curLeft = curLeft > 0 ? curLeft : 0;
           curTop = curTop < maxTop ? curTop : maxTop;
@@ -94,7 +89,6 @@ export default defineComponent({
       }
     },
     onmouseup() {
-      console.log("取消移动")
       const elm: HTMLElement | null = document.getElementById(this.id);
       elm?.classList.add("slash-trans")
       this.moved = false;

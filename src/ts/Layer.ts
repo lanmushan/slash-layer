@@ -34,12 +34,16 @@ class Layer {
     constructor(config?: LayerGlobalConfigure, app?: App) {
         this.app = app;
         loadingDirective(app);
+
         if (config == undefined) {
             this.configure = defaultLayerGlobalConfigure;
         } else {
-            this.configure = defaultLayerGlobalConfigure;
             //合并内置配置
-            //  this.configure = LayerUtil.leftMergeJson(defaultLayerGlobalConfigure, config) as LayerGlobalConfigure;
+            let obj:LayerGlobalConfigure=LayerUtil.deepClone(config) as LayerGlobalConfigure;
+            obj = LayerUtil.mergeJson(obj, defaultLayerGlobalConfigure) as LayerGlobalConfigure;
+            obj.areaDef=LayerUtil.coverJson(defaultLayerGlobalConfigure.areaDef,config.areaDef)
+            this.configure=obj;
+            console.log("全量配置信息",obj);
         }
     }
 
@@ -130,7 +134,7 @@ class Layer {
                         loading: true,
                         loadingText: "正在修改中",
                         callback: (instance, data) => {
-                            instance.value.doSubmit().then((msg) => {
+                            instance.value.doUpdate().then((msg) => {
                                 const result: SuccessDecideResult = this.configure.successDecide(msg)
                                 this.autoInfo(result);
                                 if (result.result) {
@@ -353,9 +357,7 @@ class Layer {
     }
 
     open(config: OpenConfigure): void {
-        console.log("初始参数:", JSON.stringify(config));
         const options: OpenConfigure = this.getOpenConfigure(config);
-        console.log("加工后参数:", options);
         options.id = `${layer_id_prefix}_${LayerUtil.createId()}`;
         this.createHtmlDom(options);
         const elm: HTMLElement | null = document.getElementById(options.id);
@@ -367,7 +369,6 @@ class Layer {
         })
         if (options.autoCloseTime && options.autoCloseTime > 0) {
             setTimeout(() => {
-                console.log("自动关闭吧");
                 Layer.close(options.id);
             }, options.autoCloseTime)
         }

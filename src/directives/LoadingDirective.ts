@@ -7,7 +7,6 @@ export const loadingDirective = (app) => {
     app.directive("slash-loading", (pEl: HTMLElement, binding: DirectiveBinding, pVNode: VNode) => {
         let state = false;
         let text = "正在加载中"
-        console.log(binding.value);
         if (typeof binding.value == 'boolean') {
             state = binding.value
         } else if (typeof binding.value == "object") {

@@ -32,7 +32,6 @@ export default {
   name: 'App',
   components: {GlobalConfigurationDemo}, methods: {
     test() {
-      console.log("哈哈哈", this.$layer);
     },
     open() {
       this.$layer.open({
@@ -73,9 +72,7 @@ export default {
         title: "确认",
         msg: "我是确认消息"
       }).then((data) => {
-        console.log("确认")
       }).catch((data) => {
-        console.log("取消")
       })
     },
     createForm() {

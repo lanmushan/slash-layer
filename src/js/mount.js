@@ -3,7 +3,6 @@
 import {createVNode, render} from 'vue'
 
 export const mount = (component, {props = {}, app = undefined} = {}) => {
-    console.log("111", app);
     let el = null;
     let vNode = createVNode(component, props)
     if (app && app["_context"]) {

@@ -19,7 +19,7 @@ export default class LayerUtil {
     }
 
     static getViewPortWidth(): number {
-        return document.documentElement.clientWidth ||document.body.offsetWidth|| document.body.clientWidth;
+        return document.documentElement.clientWidth || document.body.offsetWidth || document.body.clientWidth;
     }
 
     static getViewPortHeight(): number {
@@ -69,6 +69,13 @@ export default class LayerUtil {
             if (right[key] != undefined) {
                 left[key] = right[key];
             }
+        }
+        return left;
+    }
+
+    static coverJson(left, right) {
+        for (const key in right) {
+            left[key] = right[key];
         }
         return left;
     }

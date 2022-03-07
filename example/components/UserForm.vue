@@ -99,7 +99,7 @@
 <script lang="ts">
 import {defineComponent, reactive} from "vue";
 import HelloWorld from "./HelloWorld"
-import {createUser} from "../apis/UserApi"
+import {createUser, updateUser} from "../apis/UserApi"
 
 export default defineComponent({
   name: 'UserForm',
@@ -135,9 +135,9 @@ export default defineComponent({
     //   return form;
     // }
     const doUpdate = () => {
-      console.log('doUpdate')
+      return updateUser(form);
     }
-    return {form, doSubmit}
+    return {form, doSubmit,doUpdate}
   }
 })
 </script>

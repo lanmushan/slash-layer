@@ -99,10 +99,8 @@ export default defineComponent({
       }
     },
     doFullScreen() {
-      console.log(this.id)
       const elm: HTMLElement | null = document.getElementById(this.id);
       if (!elm) {
-        console.log("未找到元素")
 
         return
       }
@@ -122,7 +120,6 @@ export default defineComponent({
         footer['style'].position = 'absolute'
       }
       this.full = true;
-      console.log(this.full)
     },
     doRearrange() {
       let elms = document.querySelectorAll(".slash-layer-swin");
@@ -200,7 +197,6 @@ export default defineComponent({
     },
     doInit() {
       if (this.$props.options.position) {
-        console.log(this.$props.options.position)
         this.setPosition(this.$props.options.position as LayerPosition)
       }
     },
@@ -221,7 +217,7 @@ export default defineComponent({
       footer.value = false;
     }
     if (runMode) {
-      content.value.props["runMode"] = runMode;
+      content.value.props['runMode'] = runMode.value;
     }
     const loadingText = ref("初始化加载");
     const loadingState = ref(loadingTime == 0 ? false : true);
@@ -259,6 +255,10 @@ export default defineComponent({
           })
         }
 
+      } else {
+        return new Promise((resolve, reject) => {
+          reject("未找到目标表单提交方法doSubmit");
+        })
       }
     }
     const doUpdate = () => {
@@ -267,7 +267,22 @@ export default defineComponent({
         console.error("目标表单为空")
       }
       if (targetRef.value.doUpdate) {
-        return targetRef.value.doUpdate();
+        const result = targetRef.value.doSubmit();
+        if (LayerUtil.checkPromise(result)) {
+          return result;
+        } else {
+          return new Promise((resolve, reject) => {
+            if (typeof result == "object") {
+              return resolve(result);
+            } else {
+              reject(result);
+            }
+          })
+        }
+      } else {
+        return new Promise((resolve, reject) => {
+          reject("未找到目标表单提交方法doUpdate");
+        })
       }
     }
     const setLoadingState = (state: boolean, text?: string) => {
@@ -331,7 +346,8 @@ export default defineComponent({
       loadingText,
       loadingState,
       cancelLoading,
-      doSubmit
+      doSubmit,
+      doUpdate
     }
   }
 })
