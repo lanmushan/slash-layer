@@ -1,0 +1,297 @@
+.slash-layer-mask {
+  position: fixed;
+  top: -1px;
+  left: 0px;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+
+  .slash-layer .layer-wrapper {
+    box-shadow: none;
+  }
+}
+
+.layer-msg {
+  width: fit-content;
+  margin: 0px auto;
+}
+
+
+.slash-layer {
+  position: absolute;
+  display: block;
+  margin: 0 auto;
+  top: 0px;
+  left: 0px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: white;
+  transform-origin: 0px 0px; // 定义缩放原点,相对于左上角的距离x、y，单位px
+  box-sizing: border-box;
+  background: transparent;
+
+  div::-webkit-scrollbar { /*滚动条整体样式*/
+    width: 0px; /*高宽分别对应横竖滚动条的尺寸*/
+    height: 0px;
+    transition: all 1s;
+  }
+
+  div:hover::-webkit-scrollbar { /*滚动条整体样式*/
+    width: 3px; /*高宽分别对应横竖滚动条的尺寸*/
+    height: 10px;
+  }
+
+  div:hover::-webkit-scrollbar-thumb { /*滚动条整体样式*/
+    -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.04);
+    background: rgba(83, 83, 83, 0.55);
+    background-clip: padding-box;
+
+  }
+
+  div:hover::-webkit-scrollbar-track { /*滚动条里面轨道*/
+    -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.12);
+    background: #EDEDED;
+  }
+
+  .layer-wrapper {
+    display: block;
+    height: 100%;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 3px 3px 5px rgba(205, 205, 205, 0.67),
+      -3px -3px 3px rgba(205, 205, 205, 0.56);
+    background: white;
+
+    .layer-header {
+      height: 40px;
+      z-index: 999;
+      width: 100%;
+      position: relative;
+      padding: 10px;
+      box-sizing: border-box;
+      border-bottom: 1px solid #e4e5e5;
+      margin: 0;
+      cursor: move;
+      .title {
+        color: #000000d9;
+        font-weight: 500;
+        font-size: 16px;
+        line-height: 22px;
+        font-weight: bold;
+        word-wrap: break-word;
+      }
+
+      .header-tool {
+        float: right;
+
+        .iconfont {
+          margin-left: 10px;
+          display: inline-block;
+          width: 15px;
+          color: #898787;
+          transition: all .1s;
+          -webkit-transition: all .1s; /* Safari */
+        }
+
+        .iconfont:hover {
+          cursor: pointer;
+          font-size: 18px;
+          transform: scale(1.5);
+          -ms-transform: scale(1.1); /* IE 9 */
+          -moz-transform: scale(1.1); /* Firefox */
+          -webkit-transform: scale(1.1); /* Safari 和 Chrome */
+          -o-transform: scale(1.1);
+          color: #010e20;
+        }
+      }
+    }
+
+    .layer-content {
+      box-sizing: border-box;
+      padding: 5px;
+      display: block;
+      height: 100%;
+      position: relative;
+      overflow-y: auto;
+      overflow-x: hidden;
+      width: 100%;
+    }
+
+    .layer-footer {
+      bottom: 0;
+      position: absolute;
+      z-index: 999;
+      width: 100%;
+      height: 40px;
+      padding: 2px;
+      box-sizing: border-box;
+      border-top: 1px solid #e4e5e5;
+      text-align: right;
+
+      .footer-tool {
+        .btn {
+          line-height: 1.5715;
+          position: relative;
+          display: inline-block;
+          font-weight: 400;
+          margin-right: 10px;
+          white-space: nowrap;
+          text-decoration: none;
+          text-align: center;
+          border: 1px solid #d9d9d9;
+          letter-spacing: 3px;
+          box-shadow: 0 2px #00000004;
+          cursor: pointer;
+          transition: all .3s cubic-bezier(.645, .045, .355, 1);
+          -webkit-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
+          touch-action: manipulation;
+          padding: 4px 15px;
+          font-size: 14px;
+          border-radius: 2px;
+          color: #000000d9;
+          background: #fff;
+        }
+
+        .btn:hover {
+          border-color: #409eff;
+          color: #409eff;
+        }
+
+        .btn:disabled {
+          color: #6a6767;
+          border: 1px solid #d9d9d9;
+        }
+
+        .btn-primary {
+          background: #409eff;
+          border-color: transparent;
+          color: white;
+        }
+
+        .btn-primary:hover {
+          background: rgba(83, 165, 249, 0.85);
+          border-color: transparent;
+          color: white;
+        }
+
+        .btn-primary:disabled {
+          background: rgba(83, 165, 249, 0.85);
+          border-color: transparent;
+          color: white;
+        }
+      }
+    }
+  }
+
+  .layer-images {
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: 0px;
+
+    .layer-header {
+      border: none;
+      span.title{
+        display: none;
+      }
+      .header-tool .iconfont {
+        color: white;
+      }
+      .header-tool .iconfont:hover {
+        color: white;
+      }
+    }
+  }
+}
+
+.slash-loading {
+  background: red;
+  height: 100%;
+  width: 100%;
+  top: 0px;
+  left: 0px;
+  position: absolute;
+  z-index: 9999;
+  background: 100%;
+  box-sizing: border-box;
+  text-align: center;
+  /*flex 布局*/
+  display: flex;
+  /*实现垂直居中*/
+  align-items: center;
+  background: rgba(255, 255, 255, 0.99);
+  /*实现水平居中*/
+  justify-content: center;
+  text-align: justify;
+
+  .loading-content {
+    height: 50px;
+    text-align: center;
+
+    .loading-icon {
+      font-size: 24px;
+      display: inline-block;
+      color: #409eff;
+      border-radius: 50%;
+      overflow: hidden;
+      animation: rotate 1s linear infinite;
+      //linear// 意思就是匀速的运动   infinite// 就是无限滚动的意思
+    }
+
+    .loading-describe {
+      display: block;
+      color: #4fa5fe;
+      margin-top: 10px;
+      line-height: 20px;
+    }
+  }
+}
+
+.slash-trans {
+  transition: all 0.2s;
+  -moz-transition: all 0.2s; /* Firefox 4 */
+  -webkit-transition: all 0.2s; /* Safari 和 Chrome */
+  -o-transition: all 0.2s; /* Opera */
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg)
+  }
+  to {
+    transform: rotate(360deg)
+  }
+}
+
+.slash-top-fadein {
+  animation: slash-top-fadein-animation 0.3s;
+  -moz-animation: slash-top-fadein-animation 0.3s;
+  -webkit-animation: slash-top-fadein-animation 0.3s;
+  -o-animation: slash-top-fadein-animation 0.3s;
+}
+
+.slash-top-fadeout {
+  animation: slash-top-fadeout-animation 0.5s;
+  -moz-animation: slash-top-fadeout-animation 0.5s;
+  -webkit-animation: slash-top-fadeout-animation 0.5s;
+  -o-animation: slash-top-fadeout-animation 0.5s;
+  top: -50%;
+  opacity: 0;
+}
+
+@keyframes slash-top-fadein-animation {
+  0% {
+    top: -100%;
+  }
+}
+
+@keyframes slash-top-fadeout-animation {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    top: -100%;
+    opacity: 0;
+  }
+}

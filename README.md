@@ -3,7 +3,7 @@
 基于VUE开发的模态框插件，支持常见的表单快速提交和图片预览等功能
 ## 效果
 ## 预览效果
-![img](http://lmscms.oss-cn-beijing.aliyuncs.com/slash-layer/images/img.png)
+![img](../docs/iamges/img.png)
 ![img](http://lmscms.oss-cn-beijing.aliyuncs.com/slash-layer/images/form.png)
 ![img](https://lmscms.oss-cn-beijing.aliyuncs.com/slash-layer/images/demo.png)
 
