@@ -3,7 +3,7 @@
 基于VUE开发的模态框插件，支持常见的表单快速提交和图片预览等功能
 ## 效果
 ## 预览效果
-![img](../docs/iamges/img.png)
+![img](http://lmscms.oss-cn-beijing.aliyuncs.com/slash-layer/images/img.png)
 ![img](http://lmscms.oss-cn-beijing.aliyuncs.com/slash-layer/images/form.png)
 ![img](https://lmscms.oss-cn-beijing.aliyuncs.com/slash-layer/images/demo.png)
 
@@ -117,9 +117,9 @@ import UserForm from "../components/UserForm"
 export default {
   name: "GlobalConfigurationDemo",
   data(){
-  return  {
-    src: "../assets/1.jpg"
-  }
+    return  {
+      src: "../assets/1.jpg"
+    }
   },
   methods: {
     open() {
@@ -190,17 +190,17 @@ export default {
     },
     images() {
       this.$layer.images({
-         imgList:[
-           {
-             src:require("../assets/1.jpg")
-           },
-           {
-             src:require("../assets/3.jpg")
-           },
-           {
-             src:require("../assets/2.jpg")
-           }
-         ]
+        imgList:[
+          {
+            src:require("../assets/1.jpg")
+          },
+          {
+            src:require("../assets/3.jpg")
+          },
+          {
+            src:require("../assets/2.jpg")
+          }
+        ]
       });
     }
   }
