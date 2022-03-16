@@ -1,9 +1,10 @@
 {
   "name": "slash-layer",
-  "version": "1.0.3",
-  "main": "dist/slash-layer.umd.min.js",
-  "module": "lib/index.esm.js",
-  "typings": "lib/index.d.ts",
+  "version": "1.0.902",
+  "main": "lib/slash-layer.umd.min.js",
+  "module": "lib/slash-layer.es.min.js",
+  "typings": "lib/packages/index.d.ts",
+  "types": "lib/packages/index.d.ts",
   "description": "基于VUE3的模态框插件",
   "keyword": [
     "vue3",

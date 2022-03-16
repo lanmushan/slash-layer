@@ -6,11 +6,11 @@ import dts from 'vite-plugin-dts';
 export default defineConfig({
     ...baseConfig,
     build: {
-        outDir: 'dist',
+        outDir: 'lib',
         lib: {
             entry: resolve(__dirname, '../packages/index.ts'),
             name: 'slash-layer',
-            fileName: (format) => `slash-layer.${format}.js`,
+            fileName: (format) => `slash-layer.${format}.min.js`,
         },
         rollupOptions: {
             // 确保外部化处理那些你不想打包进库的依赖

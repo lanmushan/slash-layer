@@ -24,7 +24,7 @@ import {createCommentVNode, createElementVNode} from "@vue/runtime-core";
 import OpenConfigureUtil from "./OpenConfigureUtil"
 import {defaultLayerGlobalConfigure, layer_id_prefix, layer_mask_prefix, layer_root_prefix} from "../consts/LayerConst";
 
-class Layer {
+export class Layer {
     static configure: LayerGlobalConfigure
     static wrapId: string = "slash_layer";
     elm: HTMLElement | null | undefined;

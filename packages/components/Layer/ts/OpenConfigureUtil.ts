@@ -2,7 +2,7 @@ import {LayerGlobalConfigure, LayerPosition} from "./LayerConfigureDefinition";
 import {layer_preset_area_default, layer_preset_area_full} from "../consts/LayerConst";
 import LayerUtil from "../ts/LayerUtil";
 
-class OpenConfigureUtil {
+export class OpenConfigureUtil {
     /**
      * 获取位置
      */

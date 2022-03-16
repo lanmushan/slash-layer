@@ -1,12 +1,16 @@
 import {App, Plugin} from 'vue';
 
 import {ButtonPlugin} from './components/Button/install';
- import {LayerPlugin} from './components/Layer/install'
+import LayerInstall, {LayerPlugin} from './components/Layer/install'
 import {LoadingDirectivePlugin} from "~/directives/install";
 
+export const Layer={
+    ...LayerInstall
+}
 const components = [
-    ButtonPlugin,LayerPlugin,LoadingDirectivePlugin
+    ButtonPlugin, LayerPlugin, LoadingDirectivePlugin
 ]
+
 const ComponentPlugin: Plugin = {
     install(app: App, options: any) {
         components.forEach((component) => {

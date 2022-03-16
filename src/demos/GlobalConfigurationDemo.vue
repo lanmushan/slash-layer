@@ -29,7 +29,7 @@
 <script>
 import HelloWorld from '@/components/HelloWorld.vue'
 import Layer from "~/components/Layer/ts/Layer";
-
+import UserForm from "@/components/UserForm.vue"
 export default {
   name: "GlobalConfigurationDemo",
   data() {
