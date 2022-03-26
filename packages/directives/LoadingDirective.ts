@@ -1,6 +1,6 @@
 import {App, DirectiveBinding, isRef} from "vue";
 import {VNode} from "@vue/runtime-core";
-import {Mount} from "../util/Mount";
+import {Mount} from "../../util/Mount";
 import Loading from "~/components/LayerLoading/LayerLoading.vue";
 
 export const loadingDirective = (app:App) => {

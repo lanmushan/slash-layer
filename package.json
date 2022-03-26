@@ -1,16 +1,29 @@
 {
   "name": "slash-layer",
-  "version": "1.0.902",
-  "main": "lib/slash-layer.umd.min.js",
-  "module": "lib/slash-layer.es.min.js",
-  "typings": "lib/packages/index.d.ts",
-  "types": "lib/packages/index.d.ts",
+  "version": "1.1.14",
+  "main": "dist/slash-layer.umd.js",
+  "module": "dist/slash-layer.es.js",
+  "typings": "dist/packages/index.d.ts",
   "description": "基于VUE3的模态框插件",
+  "style": "dist/style.css",
   "keyword": [
     "vue3",
     "layer",
     "弹出框",
     "模态框"
+  ],
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/slash-layer.es.js",
+      "require": "./dist/slash-layer.umd.js"
+    },
+    "./*": "./*"
+  },
+  "sideEffects": [
+    "dist/*"
   ],
   "private": false,
   "scripts": {
@@ -20,20 +33,19 @@
     "doc": "docsify serve docs",
     "preview": "vite preview"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
-    "highlight.js": "^11.5.0",
-    "prismjs": "^1.27.0",
-    "vue": "^3.2.25",
-    "vue-router": "^4.0.13",
     "@types/node": "^17.0.21",
     "@vitejs/plugin-vue": "^2.2.0",
     "axios": "^0.26.1",
     "element-plus": "^2.1.0",
+    "highlight.js": "^11.5.0",
+    "prismjs": "^1.27.0",
     "typescript": "^4.5.4",
     "vite": "^2.8.0",
     "vite-plugin-dts": "^0.9.10",
+    "vue": "^3.2.25",
+    "vue-router": "^4.0.13",
     "vue-tsc": "^0.29.8"
   },
   "author": "一条摆摆鱼啊 <lanmu_shan@163.com>",
