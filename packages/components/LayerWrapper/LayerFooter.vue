@@ -1,8 +1,10 @@
 <template>
   <div class="layer-footer">
     <div class="footer-tool">
-      <button href="javascript:void(0)"  :disabled="it.curLoading" :class="it.className" v-for="(it, i) in btnList" @click="onClick(i)"
-         class="btn">{{ it.name }}</button>
+      <button href="javascript:void(0)" :disabled="it.curLoading" :class="it.className" v-for="(it, i) in btnList"
+              @click="onClick(i)"
+              class="btn">{{ it.name }}
+      </button>
     </div>
   </div>
 </template>
@@ -23,10 +25,10 @@ export default defineComponent({
       type: Object as PropType<OpenBtn>
     }
   },
-  emits:["btnClick"],
+  emits: ["btnClick"],
   methods: {},
   setup(props, ctx) {
-    const onClick = function (index:number) {
+    const onClick = function (index: number) {
       ctx.emit("btnClick", index);
     }
     return {onClick}

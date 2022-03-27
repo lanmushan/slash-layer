@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, ref,toRefs} from "vue";
+import {defineComponent, ref, toRefs} from "vue";
 import LayerUtil from "../Layer/ts/LayerUtil";
 
 
@@ -50,7 +50,7 @@ export default defineComponent({
     onMinSize() {
       this.$emit("minSize")
     },
-    onMouseDown(e:any) {
+    onMouseDown(e: any) {
       if (!this.drag) {
         return;
       }
@@ -67,7 +67,7 @@ export default defineComponent({
       this.moved = true;
       elm.classList.remove("slash-trans")
     },
-    onMouseMove(e:any) {
+    onMouseMove(e: any) {
       const offsetX = e.clientX - this.move.startX
       const offsetY = e.clientY - this.move.startY
       if (this.moved) {

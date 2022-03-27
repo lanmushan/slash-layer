@@ -1,20 +1,27 @@
 ## 插件简介
 
 基于VUE开发的模态框插件，支持常见的表单快速提交和图片预览等功能
+
 ## 效果
+
 ## 预览效果
+
 ![img](http://lmscms.oss-cn-beijing.aliyuncs.com/slash-layer/images/img.png)
 ![img](http://lmscms.oss-cn-beijing.aliyuncs.com/slash-layer/images/form.png)
 ![img](https://lmscms.oss-cn-beijing.aliyuncs.com/slash-layer/images/demo.png)
 
 ## 项目特点
+
 1. 为了快速开发后台管理系统
 2. 后期适配移动端和指令式弹框
+
 ## 源码
+
 [github](https://github.com/lanmushan/slash-layer)
 [gitee](https://gitee.com/lanmushan/slash-layer)
 
 ## 依赖
+
 ```json
 {
   "core-js": "^3.6.5",
@@ -46,8 +53,11 @@
 ```shell
 npm install slash-layer
 ```
+
 ### 配置
+
 配置文件（可参考详细配置这里只提供示例）
+
 ```javascript
 export const config = {
     title: "自定义全局标题",
@@ -69,7 +79,9 @@ export const config = {
 }
 export default config;
 ```
+
 ### main.js
+
 ```javascript
 import {createApp} from 'vue'
 import App from './App.vue'
@@ -81,7 +93,9 @@ app.use(SlashLayer,config)
 app.mount('#app')
 
 ```
+
 ### 调用示例
+
 ```vue
 <template>
   <h2>

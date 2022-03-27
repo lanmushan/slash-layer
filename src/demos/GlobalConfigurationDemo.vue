@@ -30,6 +30,7 @@
 import HelloWorld from '@/components/HelloWorld.vue'
 import Layer from "~/components/Layer/ts/Layer";
 import UserForm from "@/components/UserForm.vue"
+
 export default {
   name: "GlobalConfigurationDemo",
   data() {
@@ -88,9 +89,9 @@ export default {
             msg: "创建用户"
           }
         }
-      }).then(()=>{
+      }).then(() => {
         alert("成功反馈")
-      }).catch(()=>{
+      }).catch(() => {
         alert("取消反馈")
       });
     },
@@ -103,9 +104,9 @@ export default {
             msg: "创建用户"
           }
         }
-      }).then(()=>{
+      }).then(() => {
         alert("成功反馈")
-      }).catch(()=>{
+      }).catch(() => {
         alert("取消反馈")
       });
     },
@@ -120,7 +121,7 @@ export default {
         }
       });
     },
-     getSrc(url){
+    getSrc(url) {
       return new URL(url, import.meta.url).href
     },
     images() {

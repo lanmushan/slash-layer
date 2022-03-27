@@ -17,6 +17,7 @@ import {PropType} from "vue";
 import {OpenConfigure} from "../Layer/ts/LayerConfigureDefinition";
 
 import {defineComponent} from "vue";
+
 export default defineComponent({
   name: "Message",
   props: {
@@ -41,12 +42,14 @@ export default defineComponent({
 .message-wrapper {
   .success {
     display: block;
+
     .left-box {
       display: inline-block;
       text-align: right;
       width: 40px;
       box-sizing: border-box;
       vertical-align: top;
+
       .icon {
         padding: 0px;
         font-size: 32px;

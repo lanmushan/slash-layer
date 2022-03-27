@@ -53,6 +53,7 @@ export default class Layer {
     public static modal(config: OpenConfigure): void {
         Layer.open(config);
     }
+
     public static confirm(config: ConfirmConfigure | string): Promise<any> {
         let _that = this;
         let tempConfig: ConfirmConfigure | null = null;
@@ -116,7 +117,7 @@ export default class Layer {
      * 新增表单
      * @param config
      */
-    public static  createForm(config: FormConfigure): Promise<any> {
+    public static createForm(config: FormConfigure): Promise<any> {
         let _that = this;
         return new Promise((resolve, reject) => {
             let formConfig = {
@@ -177,7 +178,7 @@ export default class Layer {
      * 新增表单
      * @param config
      */
-    public static updateForm(config: FormConfigure):  Promise<any> {
+    public static updateForm(config: FormConfigure): Promise<any> {
         let _that = this;
         return new Promise((resolve, reject) => {
             let formConfig = {
@@ -255,7 +256,7 @@ export default class Layer {
     }
 
 
-    public static form(config: FormConfigure):void {
+    public static form(config: FormConfigure): void {
         let formConfig = {
             title: config.title,
             max: true,
@@ -271,7 +272,7 @@ export default class Layer {
             content: config.content,
         }
         let openConfig = LayerUtil.leftMergeJson(formConfig, config) as OpenConfigure;
-      return   this.open(openConfig);
+        return this.open(openConfig);
     }
 
     public static success(config: MessageConfigure | string): void {

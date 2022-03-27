@@ -154,10 +154,9 @@ export default defineComponent({
     const reductionPicture = () => {
       rotateRef.value = 0;
       scaleRef.value = 1;
-      if(previewWarpRefDom.value)
-      {
-        previewWarpRefDom.value.style.left=0;
-        previewWarpRefDom.value.style.top=0;
+      if (previewWarpRefDom.value) {
+        previewWarpRefDom.value.style.left = 0;
+        previewWarpRefDom.value.style.top = 0;
       }
 
     }

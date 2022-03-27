@@ -1,5 +1,5 @@
 <template>
-  <button  class="slash-button" @click="$emit('click', $event)">
+  <button class="slash-button" @click="$emit('click', $event)">
     哈哈哈
   </button>
 </template>

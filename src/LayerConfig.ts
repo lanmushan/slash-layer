@@ -4,7 +4,7 @@ export const config = {
     title: "自定义全局标题",
     max: false,
     min: false,
-    header:true,
+    header: true,
     loadingTime: 500,
     successDecide(msg: any) {
         console.log(msg);

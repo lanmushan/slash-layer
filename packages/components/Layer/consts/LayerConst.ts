@@ -16,7 +16,7 @@ export const layer_preset_area_sm: string = "sm";
 export const layer_preset_area_md: string = "md";
 export const layer_preset_area_lg: string = "lg";
 export const layer_preset_area_default: string = "default";
-export const layer_preset_area_full:string="full"
+export const layer_preset_area_full: string = "full"
 
 export const defaultLayerGlobalConfigure = {
     title: "弹出框",
@@ -24,8 +24,8 @@ export const defaultLayerGlobalConfigure = {
     min: true,
     header: true,
     footer: true,
-    autoCloseTime:0,
-    loadingTime:200,
+    autoCloseTime: 0,
+    loadingTime: 200,
     successDecide: (msg: any) => {
         console.error("请配置successDecide才能使用表单弹框")
     },

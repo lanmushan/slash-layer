@@ -49,13 +49,13 @@ export interface SuccessDecideResult {
 }
 
 export interface OptionsContent {
-    component: DefineComponent|any|object,
-    props?: PropType<any>|any
+    component: DefineComponent | any | object,
+    props?: PropType<any> | any
 }
 
 
 export interface OpenConfigure extends LayerConfigureDefinition {
-    id?: string|undefined,
+    id?: string | undefined,
     position?: LayerPosition | string,
     content: OptionsContent,
     header: boolean,
@@ -63,10 +63,11 @@ export interface OpenConfigure extends LayerConfigureDefinition {
     btn: Array<OpenBtn>
     autoCloseTime: number
     runMode?: string,
-    className?: string |undefined
+    className?: string | undefined
     loadingTime?: number
     theme?: string,
     mask?: boolean
+
     closeCallBack(id?: string, data?: any): string;
 }
 

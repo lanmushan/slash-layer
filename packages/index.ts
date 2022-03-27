@@ -3,6 +3,7 @@ import {App, Plugin} from 'vue';
 import {ButtonPlugin} from './components/Button';
 import {LayerPlugin} from './components/Layer'
 import {LoadingDirectivePlugin} from "~/directives/";
+
 export * from './components'
 
 const components = [

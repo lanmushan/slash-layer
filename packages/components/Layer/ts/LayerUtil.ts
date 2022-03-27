@@ -4,14 +4,16 @@ export default class LayerUtil {
     static checkPromise(obj: any | Promise<object>) {
         return obj && obj["then"];
     }
-    static getMaxZIndex():number{
-        let elms:NodeListOf<any>=document.querySelectorAll("*");
-       // @ts-ignore
-        let arr:number = [...elms].map(e => +window.getComputedStyle(e).zIndex || 0);
+
+    static getMaxZIndex(): number {
+        let elms: NodeListOf<any> = document.querySelectorAll("*");
+        // @ts-ignore
+        let arr: number = [...elms].map(e => +window.getComputedStyle(e).zIndex || 0);
         // @ts-ignore
         console.log("获取最大高度")
-       return arr.length ? Math.max(...arr) : 0
+        return arr.length ? Math.max(...arr) : 0
     }
+
     static uuid(): string {
         function S4() {
             return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
@@ -32,7 +34,7 @@ export default class LayerUtil {
         return document.documentElement.clientHeight || document.body.clientHeight;
     }
 
-    static getAbsolutePosition(reference:any, target:any): any {
+    static getAbsolutePosition(reference: any, target: any): any {
         //因为我们会将目标元素的边框纳入递归公式中，这里先减去对应的值
         const result = {
             left: -target.clientLeft,
@@ -61,7 +63,7 @@ export default class LayerUtil {
      * @param options
      * @param def
      */
-    static mergeJson(options:any, def:any): Object {
+    static mergeJson(options: any, def: any): Object {
         for (const key in def) {
             if (options[key] == undefined) {
                 options[key] = def[key];
@@ -70,7 +72,7 @@ export default class LayerUtil {
         return options;
     }
 
-    static leftMergeJson(left:any, right:any): Object {
+    static leftMergeJson(left: any, right: any): Object {
         for (const key in right) {
             if (right[key] != undefined) {
                 left[key] = right[key];
@@ -79,15 +81,15 @@ export default class LayerUtil {
         return left;
     }
 
-    static coverJson(left:any, right:any) {
+    static coverJson(left: any, right: any) {
         for (const key in right) {
             left[key] = right[key];
         }
         return left;
     }
 
-    static deepClone(obj:any): Object {
-        const result:any = typeof obj.splice === "function" ? [] : {};
+    static deepClone(obj: any): Object {
+        const result: any = typeof obj.splice === "function" ? [] : {};
         if (obj && typeof obj === 'object') {
             for (const key in obj) {
                 if (obj[key] && typeof obj[key] === 'object') {

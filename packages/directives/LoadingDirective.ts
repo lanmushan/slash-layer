@@ -3,7 +3,7 @@ import {VNode} from "@vue/runtime-core";
 import {Mount} from "../util/Mount";
 import Loading from "~/components/LayerLoading/LayerLoading.vue";
 
-export const loadingDirective = (app:App) => {
+export const loadingDirective = (app: App) => {
     app.directive("slash-loading", (pEl: HTMLElement, binding: DirectiveBinding, pVNode: VNode) => {
         let state = false;
         let text = "正在加载中"
@@ -22,7 +22,7 @@ export const loadingDirective = (app:App) => {
             }
         }
         if (state) {
-            const innerText=ref(text);
+            const innerText = ref(text);
             // setTimeout(()=>{
             //     innerText.value="xxxxx";
             // },500)

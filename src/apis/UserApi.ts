@@ -1,6 +1,6 @@
 // ajax.tsx 文件
 
-export const createUser =  (data: object) => {
+export const createUser = (data: object) => {
     return new Promise((resolve, require) => {
         let result = {
             "code": 200,
@@ -32,7 +32,7 @@ export const createUser =  (data: object) => {
         }, 2000)
     })
 }
-export const updateUser=(data:object)=>{
+export const updateUser = (data: object) => {
     return new Promise((resolve, require) => {
         let result = {
             "code": 500,
