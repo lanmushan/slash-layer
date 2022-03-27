@@ -88,6 +88,10 @@ export default {
             msg: "创建用户"
           }
         }
+      }).then(()=>{
+        alert("成功反馈")
+      }).catch(()=>{
+        alert("取消反馈")
       });
     },
     updateForm() {
@@ -99,6 +103,10 @@ export default {
             msg: "创建用户"
           }
         }
+      }).then(()=>{
+        alert("成功反馈")
+      }).catch(()=>{
+        alert("取消反馈")
       });
     },
     readForm() {

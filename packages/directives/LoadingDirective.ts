@@ -1,6 +1,6 @@
-import {App, DirectiveBinding, isRef} from "vue";
+import {App, DirectiveBinding, isRef, ref} from "vue";
 import {VNode} from "@vue/runtime-core";
-import {Mount} from "../../util/Mount";
+import {Mount} from "../util/Mount";
 import Loading from "~/components/LayerLoading/LayerLoading.vue";
 
 export const loadingDirective = (app:App) => {
@@ -22,11 +22,16 @@ export const loadingDirective = (app:App) => {
             }
         }
         if (state) {
+            const innerText=ref(text);
+            // setTimeout(()=>{
+            //     innerText.value="xxxxx";
+            // },500)
+            // @ts-ignore
             let {el, vNode} = Mount(Loading, {
                 props: {
-                    describe: text
+                    describe: innerText.value
                 },
-                app: app as any
+                app: app as any,
             })
             pEl.appendChild(el as Node)
         } else {

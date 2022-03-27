@@ -1,12 +1,10 @@
 import {App, Plugin} from 'vue';
 
-import {ButtonPlugin} from './components/Button/install';
-import LayerInstall, {LayerPlugin} from './components/Layer/install'
-import {LoadingDirectivePlugin} from "~/directives/install";
+import {ButtonPlugin} from './components/Button';
+import {LayerPlugin} from './components/Layer'
+import {LoadingDirectivePlugin} from "~/directives/";
+export * from './components'
 
-export const Layer={
-    ...LayerInstall
-}
 const components = [
     ButtonPlugin, LayerPlugin, LoadingDirectivePlugin
 ]

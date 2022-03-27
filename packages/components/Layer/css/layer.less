@@ -5,16 +5,12 @@
   height: 100%;
   width: 100%;
   background-color: rgba(0, 0, 0, 0.5);
-
+  z-index: 99999;
   .slash-layer .layer-wrapper {
     box-shadow: none;
   }
 }
 
-.layer-msg {
-  width: fit-content;
-  margin: 0px auto;
-}
 
 
 .slash-layer {
@@ -37,7 +33,7 @@
   }
 
   div:hover::-webkit-scrollbar { /*滚动条整体样式*/
-    width: 3px; /*高宽分别对应横竖滚动条的尺寸*/
+    width: 1px; /*高宽分别对应横竖滚动条的尺寸*/
     height: 10px;
   }
 
@@ -58,13 +54,12 @@
     height: 100%;
     border-radius: 5px;
     overflow: hidden;
-    box-shadow: 3px 3px 5px rgba(205, 205, 205, 0.67),
-      -3px -3px 3px rgba(205, 205, 205, 0.56);
+    box-shadow: 3px 3px 5px rgba(205, 205, 205, 0.2),
+      -3px -3px 3px rgba(205, 205, 205, 0.2);
     background: white;
 
     .layer-header {
       height: 40px;
-      z-index: 999;
       width: 100%;
       position: relative;
       padding: 10px;
@@ -72,6 +67,7 @@
       border-bottom: 1px solid #e4e5e5;
       margin: 0;
       cursor: move;
+
       .title {
         color: #000000d9;
         font-weight: 500;
@@ -105,7 +101,9 @@
         }
       }
     }
-
+    .content-wrapper{
+      position: relative;
+    }
     .layer-content {
       box-sizing: border-box;
       padding: 5px;
@@ -120,7 +118,6 @@
     .layer-footer {
       bottom: 0;
       position: absolute;
-      z-index: 999;
       width: 100%;
       height: 40px;
       padding: 2px;
@@ -186,25 +183,45 @@
     }
   }
 
-  .layer-images {
+
+}
+
+.slash-layer{
+  border: none;
+  .layer-wrapper.layer-images {
     background: rgba(0, 0, 0, 0.8);
     border-radius: 0px;
+    overflow: hidden;
 
     .layer-header {
       border: none;
-      span.title{
+      position: absolute;
+      z-index: 9999;
+      span.title {
         display: none;
       }
+
       .header-tool .iconfont {
         color: white;
       }
+
       .header-tool .iconfont:hover {
         color: white;
       }
     }
+
+    .content-wrapper{
+      height: 100% !important;
+    }
   }
 }
-
+.slash-layer{
+  .layer-wrapper.layer-msg{
+    width: fit-content;
+    margin: 0px auto;
+    min-width: 180px;
+  }
+}
 .slash-loading {
   background: red;
   height: 100%;
@@ -212,8 +229,8 @@
   top: 0px;
   left: 0px;
   position: absolute;
-  z-index: 9999;
   background: 100%;
+  z-index: 99999;
   box-sizing: border-box;
   text-align: center;
   /*flex 布局*/

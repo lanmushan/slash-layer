@@ -250,7 +250,7 @@ export default defineComponent({
 
   .image-preview-tool {
     position: absolute;
-    bottom: 30px;
+    bottom: 0px;
     left: -300px;
     margin-left: 50%;
     height: 40px;

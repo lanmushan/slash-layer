@@ -12,9 +12,11 @@
                   @minSize="doMinSize">
 
     </layer-header>
-    <div class="layer-content" :style="{height:contentHeight}" v-slash-loading="{state:loadingState,text:loadingText}">
-      <layer-content ref="contentRef" :content="content.component" :props="content.props">
-      </layer-content>
+    <div class="content-wrapper" :style="{height:contentHeight}" v-slash-loading="{state:loadingState,text:loadingText}">
+      <div class="layer-content">
+        <layer-content ref="contentRef" :content="content.component" :props="content.props">
+        </layer-content>
+      </div>
     </div>
     <layer-footer @btnClick="onBtnCLick" :id="options.id" :btnList="btnList" v-if="footer"></layer-footer>
     <div class="s-win" v-if="sWin" @click="doSwinToNormal">
@@ -136,6 +138,10 @@ export default defineComponent({
       }
     },
     doMinSize() {
+      if(!this.id)
+      {
+        return;
+      }
       let elm = document.getElementById(this.id);
       if (!elm) {
         return;
@@ -187,15 +193,7 @@ export default defineComponent({
       }
     },
     onTop() {
-      let elms = document.getElementsByClassName(".slash-layer")
-
-      // elms.forEach((it: HTMLElement) => {
-      //   it.style.zIndex = "0"
-      // })
-      let elm = document.getElementById(this.id);
-      if (elm) {
-        elm["style"].zIndex = '999';
-      }
+      Layer.top(this.id);
     },
     doInit() {
       if (this.$props.options.position) {
@@ -215,7 +213,7 @@ export default defineComponent({
     console.log("第二次执行")
     const {id, title, position, autoCloseTime, runMode, content, loadingTime, footer, header} = toRefs(props.options);
     const btnList = ref(reactive(props.options.btn));
-    if (!btnList.value) {
+    if (!btnList.value&&footer) {
       footer.value = false;
     }
     if (runMode) {
@@ -288,13 +286,13 @@ export default defineComponent({
       }
     }
     const setLoadingState = (state: boolean, text?: string) => {
-      if(btnList.value){
+      if (btnList.value) {
         for (let i = 0; i < btnList.value.length; i++) {
           const bt: OpenBtn = btnList.value[i] as OpenBtn;
           bt.curLoading = state;
         }
       }
-      loadingState.value=state;
+      loadingState.value = state;
       if (text) {
         loadingText.value = text;
       }

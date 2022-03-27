@@ -1,5 +1,6 @@
 import {Prop, PropType} from "vue";
 import {PictureType} from "~/components/LayerImages/DeclareImages";
+import {DefineComponent} from "@vue/runtime-core";
 
 export interface LayerPosition {
     width: number,
@@ -16,11 +17,11 @@ export interface LayerGlobalConfigure {
     title: string,
     max: boolean,
     min: boolean,
-    header?: boolean,
+    header: boolean,
     footer: boolean,
-    areaDef?: object | undefined,
-    yesFunc?: string | undefined,
-    noFunc?: string | undefined,
+    areaDef?: object | null,
+    yesFunc?: string | null,
+    noFunc?: string | null,
     /*各种提示框自动关闭时间*/
     autoCloseTime: number
     /*加载效果时间*/
@@ -37,10 +38,8 @@ export interface LayerConfigureDefinition {
     title: string,
     max: boolean,
     min: boolean,
-    yesFunc?: string | undefined,
-    noFunc?: string | undefined,
-    /*加载效果时间*/
-    loadingTime: number,
+    yesFunc?: string | null,
+    noFunc?: string | null,
 }
 
 export interface SuccessDecideResult {
@@ -50,25 +49,24 @@ export interface SuccessDecideResult {
 }
 
 export interface OptionsContent {
-    component: object,
-    props: PropType<any>
+    component: DefineComponent|any|object,
+    props?: PropType<any>|any
 }
 
 
 export interface OpenConfigure extends LayerConfigureDefinition {
-    id: string,
+    id?: string|undefined,
     position?: LayerPosition | string,
     content: OptionsContent,
-    header?: boolean,
+    header: boolean,
     footer: boolean,
     btn: Array<OpenBtn>
-    autoCloseTime?: number
+    autoCloseTime: number
     runMode?: string,
-    className: string | undefined
-    loadingTime: number,
+    className?: string |undefined
+    loadingTime?: number
     theme?: string,
     mask?: boolean
-
     closeCallBack(id?: string, data?: any): string;
 }
 

@@ -24,6 +24,8 @@ export const defaultLayerGlobalConfigure = {
     min: true,
     header: true,
     footer: true,
+    autoCloseTime:0,
+    loadingTime:200,
     successDecide: (msg: any) => {
         console.error("请配置successDecide才能使用表单弹框")
     },
@@ -49,5 +51,4 @@ export const defaultLayerGlobalConfigure = {
             top: 120
         }
     },
-    loadingTime: 200,
 } as LayerGlobalConfigure

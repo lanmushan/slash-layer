@@ -1,8 +1,8 @@
 import {createVNode, render} from "vue";
 import {VNode} from "@vue/runtime-core";
 
-const Mount = (component:any, {props = {}, app = undefined, elm=null} = {}) => {
-    let el: HTMLElement | null=elm;
+const Mount = (component: any, {props = {}, app = undefined, elm = null} = {}) => {
+    let el: HTMLElement | null = elm;
     let vNode: VNode | null = createVNode(component, props)
     if (app && app["_context"]) {
         vNode.appContext = app["_context"]
@@ -22,4 +22,17 @@ const Mount = (component:any, {props = {}, app = undefined, elm=null} = {}) => {
 
     return {vNode, el}
 }
-export {Mount}
+const unMount = (component: any, {props = {}, app = undefined, elm = null} = {}) => {
+    let el: HTMLElement | null = elm;
+    let vNode: VNode | null = createVNode(component, props)
+    if (app && app["_context"]) {
+        vNode.appContext = app["_context"]
+    }
+    if (el) {
+        render(null, el)
+    }
+    el = null
+    vNode = null
+    return {vNode, el}
+}
+export {Mount, unMount}

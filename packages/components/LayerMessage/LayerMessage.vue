@@ -49,7 +49,8 @@ export default defineComponent({
       vertical-align: top;
       .icon {
         padding: 0px;
-        font-size: 40px;
+        font-size: 32px;
+        line-height: 40px;
         clear: both;
       }
     }

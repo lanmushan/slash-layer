@@ -5,7 +5,6 @@ packages/
 public/
 build/
 src/
-dist/
 index.html
 vue.config.js
 babel.config.js

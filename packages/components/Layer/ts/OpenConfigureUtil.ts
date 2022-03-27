@@ -31,10 +31,10 @@ export class OpenConfigureUtil {
         if (Object.keys(resultPosition).length == 0) {
             console.warn("未指定区域大小")
         }
-        if (!resultPosition.width) {
+        if (typeof resultPosition.width === 'undefined') {
             resultPosition.width = areaDef[layer_preset_area_default].width;
         }
-        if (!resultPosition.height) {
+        if (typeof resultPosition.height === 'undefined') {
             resultPosition.height = areaDef[layer_preset_area_default].height;
         }
         if (typeof resultPosition.left === "undefined") {

@@ -29,7 +29,7 @@ export const createUser =  (data: object) => {
         }
         setTimeout(() => {
             resolve(result);
-        }, 3000)
+        }, 2000)
     })
 }
 export const updateUser=(data:object)=>{

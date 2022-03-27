@@ -1,11 +1,9 @@
 import {App, h, render} from "vue";
 import {createVNode, defineComponent, ref} from 'vue'
-import {Mount} from '../../../util/Mount'
+import {Mount, unMount} from '../../../util/Mount'
 
-import {createApp} from 'vue'
 
 import {
-    LayerConfigureDefinition,
     LayerPosition,
     OpenConfigure,
     MessageConfigure,
@@ -24,13 +22,14 @@ import {createCommentVNode, createElementVNode} from "@vue/runtime-core";
 import OpenConfigureUtil from "./OpenConfigureUtil"
 import {defaultLayerGlobalConfigure, layer_id_prefix, layer_mask_prefix, layer_root_prefix} from "../consts/LayerConst";
 
-export class Layer {
+let temp = null;
+export default class Layer {
     static configure: LayerGlobalConfigure
     static wrapId: string = "slash_layer";
     elm: HTMLElement | null | undefined;
     static app: App | undefined
 
-    static init(config?: LayerGlobalConfigure, app?: App) {
+    public static init(config?: LayerGlobalConfigure, app?: App) {
         Layer.app = app;
         //loadingDirective(app);
         if (config == undefined) {
@@ -51,193 +50,10 @@ export class Layer {
      * 模态框
      * @param config
      */
-    static modal(config: OpenConfigure): void {
+    public static modal(config: OpenConfigure): void {
         Layer.open(config);
     }
-
-
-    /**
-     * 新增表单
-     * @param config
-     */
-    static createForm(config: FormConfigure): string | Promise<any> {
-        let _that = this;
-        return new Promise((resolve, reject) => {
-            let formConfig = {
-                ...config,
-                runMode: 'create',
-                btn: [
-                    {
-                        name: "取消",
-                        className: "",
-                        loading: true,
-                        callback: (instance, data) => {
-                            Layer.close(instance.value.id);
-                        }
-                    },
-                    {
-                        name: "提交",
-                        className: "btn-primary",
-                        loading: true,
-                        loadingText: "正在提交中",
-                        callback: (instance, data) => {
-                            instance.value.doSubmit().then((msg: SuccessDecideResult) => {
-                                const result: SuccessDecideResult = this.configure.successDecide(msg)
-                                this.autoInfo(result);
-                                if (result.result) {
-                                    Layer.close(instance.value.id);
-                                }
-                                resolve(result.data);
-                            }).catch((msg: any) => {
-                                console.error("自动提交失败", msg);
-                            }).finally(() => {
-                                instance.value.cancelLoading();
-                            })
-                        }
-                    }]
-            } as FormConfigure
-            Layer.form(formConfig);
-        })
-    }
-
-    static autoInfo(msg: SuccessDecideResult): void {
-        if (msg.result) {
-            this.success(msg.msg);
-        } else {
-            this.error(msg.msg);
-        }
-    }
-
-    /**
-     * 新增表单
-     * @param config
-     */
-    static updateForm(config: FormConfigure): string | Promise<any> {
-        let _that = this;
-        return new Promise((resolve, reject) => {
-            let formConfig = {
-                ...config,
-                runMode: 'update',
-                btn: [
-                    {
-                        name: "取消",
-                        className: "",
-                        loading: true,
-                        callback: (instance, data) => {
-                            Layer.close(instance.value.id);
-                        }
-                    },
-                    {
-                        name: "保存",
-                        className: "btn-primary",
-                        loading: true,
-                        loadingText: "正在修改中",
-                        callback: (instance, data) => {
-                            instance.value.doUpdate().then((msg: SuccessDecideResult) => {
-                                const result: SuccessDecideResult = this.configure.successDecide(msg)
-                                this.autoInfo(result);
-                                if (result.result) {
-                                    Layer.close(instance.value.id);
-                                }
-                                resolve(result.data);
-                            }).catch((msg: any) => {
-                                console.error("自动提交失败", msg);
-                            }).finally(() => {
-                                instance.value.cancelLoading();
-                            })
-                        }
-                    }]
-            } as FormConfigure
-            _that.form(formConfig);
-        })
-    }
-
-
-    /**
-     * 新增表单
-     * @param config
-     */
-    static readForm(config: FormConfigure): string | Promise<any> {
-        let _that = this;
-        return new Promise((resolve, reject) => {
-            let formConfig = {
-                ...config,
-                runMode: 'read',
-                btn: [
-                    {
-                        name: "确定",
-                        className: "btn-primary",
-                        loading: true,
-                        loadingText: "正在修改中",
-                        callback: (instance, data) => {
-                            Layer.close(instance.value.id);
-                        }
-                    }]
-            } as FormConfigure
-            _that.form(formConfig);
-        })
-    }
-
-
-    static form(config: FormConfigure): string | void {
-        let formConfig = {
-            title: config.title,
-            max: true,
-            min: true,
-            footer: true,
-            header: true,
-            loadingTime: 200,
-            autoCloseTime: 0,
-            position: {
-                width: 800,
-                top: 80,
-            },
-            content: config.content,
-        }
-        let openConfig = LayerUtil.leftMergeJson(formConfig, config) as OpenConfigure;
-        this.open(openConfig);
-    }
-
-    static success(config: MessageConfigure | string): void {
-        let conf: any = {} as MessageConfigure;
-        conf.iconColor = "#67c23a";
-        conf.icon = "&#xe616;"
-        if (typeof config === "string") {
-            conf.msg = config;
-        }
-        if (typeof config === "object") {
-            conf = LayerUtil.leftMergeJson(conf, config)
-        }
-        return this.message(conf);
-    }
-
-    static error(config: MessageConfigure | string): void {
-        let conf: any = {} as MessageConfigure;
-        conf.iconColor = "#ff0000";
-        conf.icon = "&#xe633;"
-        if (typeof config === "string") {
-            conf.msg = config;
-        }
-        if (typeof config === "object") {
-            conf = LayerUtil.leftMergeJson(conf, config)
-        }
-        this.message(conf);
-    }
-
-    static info(config: MessageConfigure): void {
-        let conf: any = {} as MessageConfigure;
-        conf.iconColor = "#474444";
-        conf.icon = "&#xe649;"
-        if (typeof config === "string") {
-            conf.msg = config;
-        }
-        if (typeof config === "object") {
-            conf = LayerUtil.leftMergeJson(conf, config)
-        }
-        this.message(conf);
-    }
-
-    static confirm(config: ConfirmConfigure | string): Promise<any> {
+    public static confirm(config: ConfirmConfigure | string): Promise<any> {
         let _that = this;
         let tempConfig: ConfirmConfigure | null = null;
         if (typeof config === "object") {
@@ -295,7 +111,210 @@ export class Layer {
         })
     }
 
-    static images(config: ImagesConfigure): void {
+
+    /**
+     * 新增表单
+     * @param config
+     */
+    public static  createForm(config: FormConfigure): Promise<any> {
+        let _that = this;
+        return new Promise((resolve, reject) => {
+            let formConfig = {
+                ...config,
+                runMode: 'create',
+                closeCallBack(id?: string, data?: any): any {
+                    reject(data);
+                },
+                btn: [
+                    {
+                        name: "取消",
+                        className: "",
+                        loading: true,
+                        callback: (instance, data) => {
+                            reject(data);
+                            Layer.close(instance.value.id);
+                        }
+                    },
+                    {
+                        name: "提交",
+                        className: "btn-primary",
+                        loading: true,
+                        loadingText: "正在提交中",
+                        callback: (instance, data) => {
+                            instance.value.doSubmit().then((msg: SuccessDecideResult) => {
+                                const result: SuccessDecideResult = this.configure.successDecide(msg)
+                                this.autoInfo(result);
+                                if (result.result) {
+                                    Layer.close(instance.value.id);
+                                }
+                                resolve(result);
+                            }).catch((msg: any) => {
+                                if (msg) {
+                                    const result: SuccessDecideResult = this.configure.successDecide(msg)
+                                    this.autoInfo(result);
+                                    reject(result);
+                                }
+                                console.log("自动提交失败", msg)
+                            }).finally(() => {
+                                instance.value.cancelLoading();
+                            })
+                        }
+                    }]
+            } as FormConfigure
+            _that.form(formConfig);
+        })
+    }
+
+    public static autoInfo(msg: SuccessDecideResult): void {
+        if (msg.result) {
+            this.success(msg.msg);
+        } else {
+            this.error(msg.msg);
+        }
+    }
+
+    /**
+     * 新增表单
+     * @param config
+     */
+    public static updateForm(config: FormConfigure): string | Promise<any> {
+        let _that = this;
+        return new Promise((resolve, reject) => {
+            let formConfig = {
+                ...config,
+                runMode: 'update',
+                closeCallBack(id?: string, data?: any): any {
+                    reject(data);
+                },
+                btn: [
+                    {
+                        name: "取消",
+                        className: "",
+                        loading: true,
+                        callback: (instance, data) => {
+                            Layer.close(instance.value.id);
+                            reject(data)
+                        }
+                    },
+                    {
+                        name: "保存",
+                        className: "btn-primary",
+                        loading: true,
+                        loadingText: "正在修改中",
+                        callback: (instance, data) => {
+                            instance.value.doUpdate().then((msg: SuccessDecideResult) => {
+                                const result: SuccessDecideResult = this.configure.successDecide(msg)
+                                this.autoInfo(result);
+                                if (result.result) {
+                                    Layer.close(instance.value.id);
+                                }
+                                resolve(result);
+                            }).catch((msg: any) => {
+                                if (msg) {
+                                    const result: SuccessDecideResult = this.configure.successDecide(msg)
+                                    this.autoInfo(result);
+                                }
+                                console.error("自动提交失败", msg);
+                            }).finally(() => {
+                                instance.value.cancelLoading();
+                            })
+                        }
+                    }]
+            } as FormConfigure
+            _that.form(formConfig);
+        })
+    }
+
+
+    /**
+     * 新增表单
+     * @param config
+     */
+    public static readForm(config: FormConfigure): string | Promise<any> {
+        let _that = this;
+        return new Promise((resolve, reject) => {
+            let formConfig = {
+                ...config,
+                runMode: 'read',
+                closeCallBack(id?: string, data?: any): any {
+                    reject(data);
+                },
+                btn: [
+                    {
+                        name: "确定",
+                        className: "btn-primary",
+                        loading: true,
+                        loadingText: "正在修改中",
+                        callback: (instance, data) => {
+                            Layer.close(instance.value.id);
+                        }
+                    }]
+            } as FormConfigure
+            _that.form(formConfig);
+        })
+    }
+
+
+    public static form(config: FormConfigure): string | void {
+        let formConfig = {
+            title: config.title,
+            max: true,
+            min: true,
+            footer: true,
+            header: true,
+            loadingTime: 200,
+            autoCloseTime: 0,
+            position: {
+                width: 800,
+                top: 80,
+            },
+            content: config.content,
+        }
+        let openConfig = LayerUtil.leftMergeJson(formConfig, config) as OpenConfigure;
+      return   this.open(openConfig);
+    }
+
+    public static success(config: MessageConfigure | string): void {
+        let conf: any = {} as MessageConfigure;
+        conf.iconColor = "#67c23a";
+        conf.icon = "&#xe616;"
+        if (typeof config === "string") {
+            conf.msg = config;
+        }
+        if (typeof config === "object") {
+            conf = LayerUtil.leftMergeJson(conf, config)
+        }
+        return Layer.message(conf);
+    }
+
+    public static error(config: MessageConfigure | string): void {
+        let conf: any = {} as MessageConfigure;
+        conf.iconColor = "#ff0000";
+        conf.icon = "&#xe633;"
+        if (typeof config === "string") {
+            conf.msg = config;
+        }
+        if (typeof config === "object") {
+            conf = LayerUtil.leftMergeJson(conf, config)
+        }
+        this.message(conf);
+    }
+
+    public static info(config: MessageConfigure): void {
+        let conf: any = {} as MessageConfigure;
+        conf.iconColor = "#474444";
+        conf.icon = "&#xe649;"
+        if (typeof config === "string") {
+            conf.msg = config;
+        }
+        if (typeof config === "object") {
+            conf = LayerUtil.leftMergeJson(conf, config)
+        }
+        this.message(conf);
+    }
+
+
+    public static images(config: ImagesConfigure): void {
         const openConfig = {
             title: "",
             max: false,
@@ -304,7 +323,7 @@ export class Layer {
             header: true,
             className: "layer-images",
             autoCloseTime: 0,
-            loadingTime:0,
+            loadingTime: 0,
             position: "full",
             content: {
                 component: Images,
@@ -314,7 +333,7 @@ export class Layer {
         this.open(openConfig);
     }
 
-    static message(config: MessageConfigure): void {
+    public static message(config: MessageConfigure): void {
         let width = config.msg.length * 25 > 200 ? config.msg.length * 20 : 200;
         const openConfig = {
             title: config.title,
@@ -344,22 +363,29 @@ export class Layer {
             rootDiv.id = `${layer_root_prefix}${config.id}`
             rootDiv.className = "slash-layer-mask";
             const layerDiv = document.createElement("div");
-            layerDiv.id = config.id;
+            if (typeof config.id === "string") {
+                layerDiv.id = config.id;
+            }
             layerDiv.className = `slash-layer`;
             rootDiv.appendChild(layerDiv);
 
         } else {
             rootDiv = document.createElement("div");
-            rootDiv.id = config.id;
+            if (typeof config.id === "string") {
+                rootDiv.id = config.id;
+            }
             rootDiv.className = `slash-layer`;
         }
 
         document.body.appendChild(rootDiv);
     }
 
-    static open(config: OpenConfigure): void {
+    public static open(config: OpenConfigure): void {
         const options: OpenConfigure = this.getOpenConfigure(config);
-        options.id = `${layer_id_prefix}_${LayerUtil.createId()}`;
+        if (typeof options.id === "undefined") {
+            options.id = `${layer_id_prefix}_${LayerUtil.createId()}`;
+        }
+        console.log("弹框参数:", options);
         this.createHtmlDom(options);
         const elm: HTMLElement | null = document.getElementById(options.id);
         const {el, vNode} = Mount(LayerWrapper, {
@@ -368,6 +394,7 @@ export class Layer {
                 class: options.theme
             }, app: this.app as any, elm: elm as any
         })
+        temp = vNode;
         if (options.autoCloseTime && options.autoCloseTime > 0) {
             setTimeout(() => {
                 Layer.close(options.id);
@@ -376,12 +403,36 @@ export class Layer {
 
     }
 
-    closeAll() {
+    public static closeAll() {
 
     }
 
-    static close(id: string): void {
+    public static top(id: string | undefined): void {
+
+        if (!id) {
+            return;
+        }
+        let zIndex = LayerUtil.getMaxZIndex()
+        let elms: NodeListOf<HTMLDivElement> = document.querySelectorAll(".slash-layer");
+        if (elms) {
+            elms.forEach(it => {
+                if (zIndex === parseInt(it.style.zIndex)) {
+                    it.style.zIndex = `${zIndex - 1}`;
+                }
+            })
+        }
+        let elm = document.getElementById(id);
+        if (elm) {
+            elm["style"].zIndex = "" + zIndex;
+        }
+    }
+
+    public static close(id: string | undefined): void {
+        if (!id) {
+            return;
+        }
         const layer = document.getElementById(id);
+
         const mask = document.getElementById(`${layer_root_prefix}${id}`)
         if (mask) {
             mask.style.background = "transparent";
@@ -390,6 +441,9 @@ export class Layer {
             layer.classList.add("slash-top-fadeout");
             setTimeout(() => {
                 if (layer) {
+                    unMount(LayerWrapper, {
+                        app: this.app as any, elm: layer as any
+                    })
                     layer.remove();
                 }
                 if (mask) {
@@ -415,8 +469,15 @@ export class Layer {
         if (!currentConfig.title) {
             currentConfig.title = defConfigure.title
         }
-        if (typeof currentConfig.header === 'undefined') {
-            currentConfig.header = defConfigure.header
+        if (typeof currentConfig.header === "undefined") {
+            if (defConfigure.header) {
+                currentConfig.header = defConfigure.header
+            } else {
+                currentConfig.header = false;
+            }
+        }
+        if (typeof currentConfig.footer === "undefined") {
+            currentConfig.footer = defConfigure.footer;
         }
         if (!currentConfig.title) {
             currentConfig.title = defConfigure.title
@@ -428,10 +489,8 @@ export class Layer {
         if (typeof currentConfig.min === 'undefined') {
             currentConfig.min = defConfigure.min;
         }
-        if (!currentConfig.footer) {
-            currentConfig.footer = defConfigure.footer;
-        }
-        if (!currentConfig.autoCloseTime) {
+
+        if (typeof currentConfig.autoCloseTime === 'undefined') {
             currentConfig.autoCloseTime = defConfigure.autoCloseTime
         }
 
@@ -463,4 +522,3 @@ export class Layer {
     }
 }
 
-export default Layer

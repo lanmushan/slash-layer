@@ -23,7 +23,7 @@
   </div>
 
 </template>
-<script>
+<script lang="ts">
 import HelloWorld from "@/components/HelloWorld.vue"
 import UserForm from "./components/UserForm.vue"
 import GlobalConfigurationDemo from "@/demos/GlobalConfigurationDemo.vue";
@@ -34,22 +34,11 @@ export default {
     test() {
     },
     open() {
-      this.$layer.open({
-        title: "张三",
-        position: {
-          width: 200,
-          height: 120,
-          top: 120,
-          left: 200,
-        },
-        content: {
-          component: HelloWorld,
-          parent: this,
-          props: {
-            msg: "参数传递"
-          }
-        }
-      });
+      this.$layer.success({
+        title: "",
+        iconColor: "red",
+        msg: "哈哈哈哈哈",
+      })
     },
     success() {
       this.$layer.success({
