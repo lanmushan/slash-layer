@@ -12,7 +12,8 @@
                   @minSize="doMinSize">
 
     </layer-header>
-    <div class="content-wrapper" :style="{height:contentHeight}" v-slash-loading="{state:loadingState,text:loadingText}">
+    <div class="content-wrapper" :style="{height:contentHeight}"
+         v-slash-loading="{state:loadingState,text:loadingText}">
       <div class="layer-content">
         <layer-content ref="contentRef" :content="content.component" :props="content.props">
         </layer-content>
@@ -138,8 +139,7 @@ export default defineComponent({
       }
     },
     doMinSize() {
-      if(!this.id)
-      {
+      if (!this.id) {
         return;
       }
       let elm = document.getElementById(this.id);
@@ -213,7 +213,7 @@ export default defineComponent({
     console.log("第二次执行")
     const {id, title, position, autoCloseTime, runMode, content, loadingTime, footer, header} = toRefs(props.options);
     const btnList = ref(reactive(props.options.btn));
-    if (!btnList.value&&footer) {
+    if (!btnList.value && footer) {
       footer.value = false;
     }
     if (runMode) {
@@ -267,7 +267,7 @@ export default defineComponent({
         console.error("目标表单为空")
       }
       if (targetRef.value.doUpdate) {
-        const result = targetRef.value.doSubmit();
+        const result = targetRef.value.doUpdate();
         if (LayerUtil.checkPromise(result)) {
           return result;
         } else {

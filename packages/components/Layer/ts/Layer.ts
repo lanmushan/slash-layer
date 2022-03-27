@@ -177,7 +177,7 @@ export default class Layer {
      * 新增表单
      * @param config
      */
-    public static updateForm(config: FormConfigure): string | Promise<any> {
+    public static updateForm(config: FormConfigure):  Promise<any> {
         let _that = this;
         return new Promise((resolve, reject) => {
             let formConfig = {
@@ -230,7 +230,7 @@ export default class Layer {
      * 新增表单
      * @param config
      */
-    public static readForm(config: FormConfigure): string | Promise<any> {
+    public static readForm(config: FormConfigure): Promise<any> {
         let _that = this;
         return new Promise((resolve, reject) => {
             let formConfig = {
@@ -255,7 +255,7 @@ export default class Layer {
     }
 
 
-    public static form(config: FormConfigure): string | void {
+    public static form(config: FormConfigure):void {
         let formConfig = {
             title: config.title,
             max: true,
