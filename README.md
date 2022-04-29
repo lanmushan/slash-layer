@@ -7,9 +7,7 @@
 1. 为了快速开发后台管理系统
 2. 后期适配移动端和指令式弹框
 
-## 预览效果
 
-![img](./docs/assets/images.png)
 
 ## 源码
 
@@ -47,3 +45,6 @@ npm install slash-layer
   "typescript": "~4.5.5"
 }
 ```
+## 部分功能预览效果
+
+![img](./docs/assets/images/images.png)
