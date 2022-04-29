@@ -43,7 +43,6 @@ export class OpenConfigureUtil {
         if (typeof resultPosition.top === "undefined") {
             resultPosition.top = areaDef[layer_preset_area_default].top;
         }
-        console.debug("定位位置:", resultPosition);
         return resultPosition;
     }
 

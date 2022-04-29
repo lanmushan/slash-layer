@@ -2,11 +2,20 @@
   <h2>
     模态框示例
   </h2>
-  <el-button type="primary" @click="open()">无配置模态框</el-button>
+  <h3>尺寸</h3>
+  <el-button type="primary" @click="open()">默认无配置情况模态框</el-button>
   <el-button type="primary" @click="modal('sm')">预设SM尺寸模态框</el-button>
   <el-button type="primary" @click="modal('md')">预设MD尺寸模态框</el-button>
   <el-button type="primary" @click="modal('lg')">预设LG尺寸模态框</el-button>
   <el-button type="primary" @click="modal('full')">全屏模态框</el-button>
+  <h3>自定义尺寸位置</h3>
+  <el-button type="default" @click="customSizeModal()">自定义大小400*400</el-button>
+  <el-button type="default" @click="customPositionModal()">自定义位置和大小</el-button>
+  <h3>自定义操作</h3>
+  <el-button type="default" @click="notMinModal()">取消最小化按钮</el-button>
+  <el-button type="default" @click="notMaxModal()">取消最大化按钮</el-button>
+  <el-button type="default" @click="notDbFullModal()">取消双击全屏</el-button>
+  <el-button type="default" @click="notMove()">关闭拖动</el-button>
 
   <h2>
     提示框示例
@@ -18,12 +27,14 @@
   <h2>
     表单
   </h2>
-  <el-button type="primary" @click="createForm">创建表单</el-button>
-  <el-button type="primary" @click="updateForm">更新表单</el-button>
-  <el-button type="primary" @click="readForm">只读表单</el-button>
+  <el-button type="primary" @click="createForm">创建模式表单</el-button>
+  <el-button type="primary" @click="updateForm">修改模式表单</el-button>
+  <el-button type="primary" @click="readForm">只读模式表单</el-button>
   <h2>其他</h2>
-  <el-button type="primary" @click="images">图片</el-button>
-  <el-button type="primary" @click="test">测试</el-button>
+  <el-button type="primary" @click="images">图片查看器</el-button>
+  <h2>功能性操作</h2>
+  <el-button type="primary" @click="closeAll()">关闭全部</el-button>
+
 </template>
 
 <script>
@@ -47,18 +58,56 @@ export default {
     }
   },
   methods: {
+    customSizeModal() {
+      Layer.open({
+        position: {
+          width: 400,
+          height: 400
+        }
+      })
+    },
+    notMaxModal() {
+      Layer.open({
+        max: false,
+      })
+    },
+    notDbFullModal() {
+      Layer.open({
+        dbFull: false,
+      })
+    },
+    notMinModal() {
+      Layer.open({
+        min: false,
+      })
+    },
+    notMove(){
+      Layer.open({
+        move:false,
+      })
+    },
+    customPositionModal() {
+      Layer.modal({
+        position: {
+          top: 200,
+          left: 100,
+          width: 400,
+          height: 400
+        }
+      })
+    },
     open() {
       this.$layer.open({});
     },
     confirm() {
-      this.$layer.confirm("您确定要删除么?").then((msg) => {
+      Layer.confirm("您确定要删除么?").then((msg) => {
         alert("点击了确认按钮")
       }).catch((msg) => {
         alert("点击了取消按钮")
       })
     },
     modal(size) {
-      this.$layer.modal({
+      Layer.modal({
         title: `${size}尺寸模态框示例`,
         position: size,
         content: {
@@ -71,17 +120,17 @@ export default {
       });
     },
     error() {
-      this.$layer.error("我是错误提示信息");
+      Layer.error("我是错误提示信息");
     },
     success() {
-      this.$layer.success("我是成功提示消息");
+     Layer.success("我是成功提示消息");
     },
     info() {
-      this.$layer.info("我是普通提示消息");
+     Layer.info("我是普通提示消息");
     },
     createForm() {
-      this.$layer.createForm({
-        title: "创建用户",
+      Layer.createForm({
+        title: "创建",
         mask: true,
         content: {
           component: UserForm,
@@ -111,7 +160,7 @@ export default {
       });
     },
     readForm() {
-      this.$layer.readForm({
+      Layer.readForm({
         title: "创建用户",
         content: {
           component: UserForm,
@@ -124,9 +173,12 @@ export default {
     getSrc(url) {
       return new URL(url, import.meta.url).href
     },
+    closeAll() {
+      Layer.closeAll();
+    },
     images() {
 
-      this.$layer.images({
+      Layer.images({
         imgList: [
           {
             src: this.getSrc("/src/assets/1.jpg")

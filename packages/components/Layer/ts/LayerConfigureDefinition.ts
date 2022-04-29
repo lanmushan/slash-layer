@@ -29,8 +29,11 @@ export interface LayerGlobalConfigure {
     /*主题*/
     theme?: string
     /*遮罩*/
-    mask?: boolean
-
+    mask?: boolean,
+    //双击全屏
+    dbFull?: boolean,
+    loadingText?: string,
+    allowMove:boolean,
     successDecide(msg: any): SuccessDecideResult
 }
 
@@ -59,6 +62,7 @@ export interface OpenConfigure extends LayerConfigureDefinition {
     position?: LayerPosition | string,
     content: OptionsContent,
     header: boolean,
+    allowMove: boolean,
     footer: boolean,
     btn: Array<OpenBtn>
     autoCloseTime: number
@@ -66,9 +70,11 @@ export interface OpenConfigure extends LayerConfigureDefinition {
     className?: string | undefined
     loadingTime?: number
     theme?: string,
-    mask?: boolean
+    mask?: boolean,
+    loadingText?: string,
+    dbFull?: boolean,
 
-    closeCallBack(id?: string, data?: any): string;
+    closeCallBack(id?: string, data?: any): string
 }
 
 
@@ -102,6 +108,18 @@ export interface ConfirmConfigure {
     position?: LayerPosition | string,
 }
 
-export interface FormConfigure extends OpenConfigure {
-    runMode?: string
+export interface FormConfigure {
+    id?: string | undefined,
+    title?: string,
+    position?: LayerPosition | string,
+    content: OptionsContent,
+    header?: boolean,
+    footer?: boolean,
+    btn: Array<OpenBtn>
+    autoCloseTime: number
+    runMode?: string,
+    className?: string | undefined
+    loadingTime?: number
+    theme?: string,
+    mask?: boolean,
 }

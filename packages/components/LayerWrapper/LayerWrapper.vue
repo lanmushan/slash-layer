@@ -5,7 +5,7 @@
                   :info="options.info"
                   :id="options.id"
                   :min="options.min"
-                  :drag="drag"
+                  :drag="allowMove"
                   v-if="header"
                   @close="onClose"
                   @toggleSize="onToggleSize"
@@ -38,6 +38,7 @@ import {toRefs} from "vue";
 import {getCurrentInstance} from "vue";
 import {ComponentInternalInstance, ComponentPublicInstance} from "@vue/runtime-core";
 import useCurrentInstance from "../Layer/ts/UseCurrentInstance";
+import {tr} from "element-plus/lib/locale";
 
 export default defineComponent({
   name: "LayerWrapper",
@@ -71,6 +72,9 @@ export default defineComponent({
   },
   methods: {
     onToggleSize() {
+      if (!this.dbFull) {
+        return;
+      }
       if (!this.full) {
         this.doFullScreen()
       } else {
@@ -203,15 +207,26 @@ export default defineComponent({
 
   },
   mounted() {
-    console.log(this.$props.options);
     this.onTop();
   },
   created() {
     this.doInit();
   },
   setup(props, ctx) {
-    console.log("第二次执行")
-    const {id, title, position, autoCloseTime, runMode, content, loadingTime, footer, header} = toRefs(props.options);
+    const {
+      id,
+      title,
+      position,
+      autoCloseTime,
+      runMode,
+      content,
+      loadingTime,
+      footer,
+      header,
+      loadingText,
+      dbFull,
+      allowMove,
+    } = toRefs(props.options);
     const btnList = ref(reactive(props.options.btn));
     if (!btnList.value && footer) {
       footer.value = false;
@@ -219,8 +234,7 @@ export default defineComponent({
     if (runMode) {
       content.value.props['runMode'] = runMode.value;
     }
-    const loadingText = ref("初始化加载");
-    const loadingState = ref(loadingTime == 0 ? false : true);
+    const loadingState = ref((typeof loadingTime !== "undefined" || loadingTime) ? true : false);
     const wrapperRef = ref<InstanceType<any>>()
     const contentRef = ref<InstanceType<typeof LayerContent>>()
     const instanceRef = ref<any>(null);
@@ -293,7 +307,7 @@ export default defineComponent({
         }
       }
       loadingState.value = state;
-      if (text) {
+      if (text && loadingText) {
         loadingText.value = text;
       }
     }
@@ -311,22 +325,27 @@ export default defineComponent({
      * 当底部按钮被点击
      * @param index
      */
-    const onBtnCLick = (index) => {
+    const onBtnCLick = (index: number) => {
       setLoadingState(true);
       if (btnList.value) {
         const bt: OpenBtn = btnList.value[index] as OpenBtn;
         if (bt.loading) {
           loadingState.value = true;
-          loadingText.value = bt.loadingText;
+          if (loadingText) {
+            loadingText.value = bt.loadingText;
+          }
         }
         if (bt.callback) {
           bt.callback(instanceRef, bt.data);
         }
       }
     }
-    setTimeout(() => {
-      setLoadingState(false)
-    }, loadingTime.value);
+    if (loadingTime) {
+      setTimeout(() => {
+        setLoadingState(false)
+      }, loadingTime.value);
+    }
+
     onMounted(() => {
       const {proxy} = useCurrentInstance();
       instanceRef.value = proxy;
@@ -336,8 +355,10 @@ export default defineComponent({
       id,
       title,
       wrapperRef,
+      allowMove,
       position,
       footer,
+      dbFull,
       doTest,
       contentRef,
       onBtnCLick,

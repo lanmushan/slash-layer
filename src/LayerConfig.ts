@@ -1,4 +1,4 @@
-import {LayerConfigureDefinition, LayerGlobalConfigure} from "../packages/components/Layer/ts/LayerConfigureDefinition";
+import {LayerGlobalConfigure} from "../packages/components/Layer/ts/LayerConfigureDefinition";
 
 export const config = {
     title: "自定义全局标题",
@@ -6,6 +6,8 @@ export const config = {
     min: false,
     header: true,
     loadingTime: 500,
+    dbFull:true,
+    allowMove:true,
     successDecide(msg: any) {
         console.log(msg);
         if (msg.code == 200) {

@@ -131,7 +131,7 @@ export default class Layer {
                         name: "取消",
                         className: "",
                         loading: true,
-                        callback: (instance, data) => {
+                        callback: (instance: any, data: any) => {
                             reject(data);
                             Layer.close(instance.value.id);
                         }
@@ -141,9 +141,9 @@ export default class Layer {
                         className: "btn-primary",
                         loading: true,
                         loadingText: "正在提交中",
-                        callback: (instance, data) => {
+                        callback: (instance: any, data: any) => {
                             instance.value.doSubmit().then((msg: SuccessDecideResult) => {
-                                const result: SuccessDecideResult = this.configure.successDecide(msg)
+                                const result: SuccessDecideResult = this.configure.successDecide(msg);
                                 this.autoInfo(result);
                                 if (result.result) {
                                     Layer.close(instance.value.id);
@@ -151,17 +151,18 @@ export default class Layer {
                                 resolve(result);
                             }).catch((msg: any) => {
                                 if (msg) {
-                                    const result: SuccessDecideResult = this.configure.successDecide(msg)
+                                    const result: SuccessDecideResult = this.configure.successDecide(msg);
                                     this.autoInfo(result);
                                     reject(result);
                                 }
-                                console.log("自动提交失败", msg)
+                                console.log("自动提交失败", msg);
                             }).finally(() => {
                                 instance.value.cancelLoading();
-                            })
+                            });
                         }
-                    }]
-            } as FormConfigure
+                    }
+                ]
+            } as unknown as FormConfigure
             _that.form(formConfig);
         })
     }
@@ -192,9 +193,9 @@ export default class Layer {
                         name: "取消",
                         className: "",
                         loading: true,
-                        callback: (instance, data) => {
+                        callback: (instance: any, data: any) => {
                             Layer.close(instance.value.id);
-                            reject(data)
+                            reject(data);
                         }
                     },
                     {
@@ -202,9 +203,9 @@ export default class Layer {
                         className: "btn-primary",
                         loading: true,
                         loadingText: "正在修改中",
-                        callback: (instance, data) => {
+                        callback: (instance: any, data: any) => {
                             instance.value.doUpdate().then((msg: SuccessDecideResult) => {
-                                const result: SuccessDecideResult = this.configure.successDecide(msg)
+                                const result: SuccessDecideResult = this.configure.successDecide(msg);
                                 this.autoInfo(result);
                                 if (result.result) {
                                     Layer.close(instance.value.id);
@@ -212,16 +213,17 @@ export default class Layer {
                                 resolve(result);
                             }).catch((msg: any) => {
                                 if (msg) {
-                                    const result: SuccessDecideResult = this.configure.successDecide(msg)
+                                    const result: SuccessDecideResult = this.configure.successDecide(msg);
                                     this.autoInfo(result);
                                 }
                                 console.error("自动提交失败", msg);
                             }).finally(() => {
                                 instance.value.cancelLoading();
-                            })
+                            });
                         }
-                    }]
-            } as FormConfigure
+                    }
+                ]
+            } as unknown as FormConfigure
             _that.form(formConfig);
         })
     }
@@ -246,11 +248,12 @@ export default class Layer {
                         className: "btn-primary",
                         loading: true,
                         loadingText: "正在修改中",
-                        callback: (instance, data) => {
+                        callback: (instance: any, data: any) => {
                             Layer.close(instance.value.id);
                         }
-                    }]
-            } as FormConfigure
+                    }
+                ]
+            } as unknown as FormConfigure
             _that.form(formConfig);
         })
     }
@@ -405,7 +408,12 @@ export default class Layer {
     }
 
     public static closeAll() {
-
+        let elms: NodeListOf<HTMLDivElement> = document.querySelectorAll(".slash-layer");
+        if (elms) {
+            elms.forEach(it => {
+                Layer.close(it.id);
+            })
+        }
     }
 
     public static top(id: string | undefined): void {
@@ -433,7 +441,6 @@ export default class Layer {
             return;
         }
         const layer = document.getElementById(id);
-
         const mask = document.getElementById(`${layer_root_prefix}${id}`)
         if (mask) {
             mask.style.background = "transparent";
@@ -466,7 +473,7 @@ export default class Layer {
 
     private static getOpenConfigure(openConfigure: OpenConfigure): OpenConfigure {
         let currentConfig = Layer.copyOpenConfigure(openConfigure) as OpenConfigure;
-        const defConfigure = Layer.configure;
+        const defConfigure = typeof Layer.configure == "undefined" ? {} as LayerGlobalConfigure : Layer.configure;
         if (!currentConfig.title) {
             currentConfig.title = defConfigure.title
         }
@@ -494,6 +501,13 @@ export default class Layer {
         if (typeof currentConfig.autoCloseTime === 'undefined') {
             currentConfig.autoCloseTime = defConfigure.autoCloseTime
         }
+        if (typeof currentConfig.loadingText === 'undefined') {
+            if (defConfigure.loadingText) {
+                currentConfig.loadingText = defConfigure.loadingText;
+            } else {
+                currentConfig.loadingText = "正在加载中";
+            }
+        }
 
         if (typeof currentConfig.loadingTime === 'undefined') {
             currentConfig.loadingTime = defConfigure.loadingTime
@@ -503,8 +517,22 @@ export default class Layer {
                 component: Welcome
             } as OptionsContent
         }
-        if (typeof currentConfig.theme === "undefined") {
-            currentConfig.theme = this.configure.theme;
+        if (typeof currentConfig.theme === "undefined" && typeof defConfigure.theme != 'undefined') {
+            currentConfig.theme = defConfigure.theme;
+        }
+        if (typeof currentConfig.dbFull === "undefined") {
+            if (defConfigure.dbFull) {
+                currentConfig.dbFull = defConfigure.dbFull;
+            } else {
+                currentConfig.dbFull = true;
+            }
+        }
+        if (typeof currentConfig.allowMove === "undefined") {
+            if (defConfigure.allowMove) {
+                currentConfig.allowMove = defConfigure.allowMove;
+            } else {
+                currentConfig.allowMove = false;
+            }
         }
         //处理坐标问题
         currentConfig.position = OpenConfigureUtil.getOpenPosition(currentConfig.position, this.configure);

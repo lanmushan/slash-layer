@@ -5,28 +5,13 @@
     </h1>
     <global-configuration-demo></global-configuration-demo>
   </div>
-  <div>
-    <h1>
-      自定义配置
-    </h1>
-    <el-button @click="open">基础弹框</el-button>
-    <el-button type="primary">模态框</el-button>
-    <el-button type="primary" @click="confirm">确认框</el-button>
-    <el-button type="success" @click="success">成功</el-button>
-    <el-button type="success" @click="success2">成功2</el-button>
-    <el-button type="success" @click="success2">图片</el-button>
-    <el-button type="danger" @click="danger">失败</el-button>
-    <el-button type="info" @click="info">提示</el-button>
-    <el-button type="primary" @click="createForm">创建表单</el-button>
-    <el-button type="primary" @click="updateForm">更新表单</el-button>
-    <el-button type="primary" @click="readForm">查看表单</el-button>
-  </div>
 
 </template>
 <script lang="ts">
 import HelloWorld from "@/components/HelloWorld.vue"
 import UserForm from "./components/UserForm.vue"
 import GlobalConfigurationDemo from "@/demos/GlobalConfigurationDemo.vue";
+import {Layer} from "~";
 
 export default {
   name: 'App',
@@ -34,30 +19,30 @@ export default {
     test() {
     },
     open() {
-      this.$layer.success({
+      Layer.success({
         title: "",
         iconColor: "red",
         msg: "哈哈哈哈哈",
       })
     },
     success() {
-      this.$layer.success({
+      Layer.success({
         title: "",
         iconColor: "red",
         msg: "哈哈哈哈哈",
       })
     },
     danger() {
-      this.$layer.error("错误信息");
+      Layer.error("错误信息");
     },
     success2() {
-      this.$layer.success("我是第二我是第二种参数我是第二种参数我是第二种参数种参数");
+      Layer.success("我是第二我是第二种参数我是第二种参数我是第二种参数种参数");
     },
     info() {
-      this.$layer.info("哈哈哈");
+      Layer.info("哈哈哈");
     },
     confirm() {
-      this.$layer.confirm({
+      Layer.confirm({
         title: "确认",
         msg: "我是确认消息"
       }).then((data) => {
@@ -65,14 +50,23 @@ export default {
       })
     },
     createForm() {
-      this.$layer.createForm({
+      Layer.createForm({
         title: "创建用户",
         content: {
           component: UserForm,
           props: {
             msg: "创建用户"
           }
-        }
+        },
+        header: false,
+        footer: false,
+        btn: [],
+        autoCloseTime: 0,
+        closeCallBack: function (id?: string, data?: any): string | undefined {
+          throw new Error("Function not implemented.");
+        },
+        max: false,
+        min: false
       });
     },
     updateForm() {

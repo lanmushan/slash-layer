@@ -6,7 +6,7 @@
 
 > Vue3轻量弹框插件
 
-- 基于VUE3写的，没做兼容
+- 基于VUE3写的，没有兼容vue2
 - 单纯为了偷懒快速开发，所以这个也懒得写了
 
 [GitHub](https://github.com/docsifyjs/docsify/)

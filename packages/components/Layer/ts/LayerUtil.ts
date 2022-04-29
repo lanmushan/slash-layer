@@ -10,7 +10,6 @@ export default class LayerUtil {
         // @ts-ignore
         let arr: number = [...elms].map(e => +window.getComputedStyle(e).zIndex || 0);
         // @ts-ignore
-        console.log("获取最大高度")
         return arr.length ? Math.max(...arr) : 0
     }
 
