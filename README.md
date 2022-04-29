@@ -20,8 +20,8 @@ yarn add slash-layer
 [gitee](https://gitee.com/lanmushan/slash-layer)
 
 ## 开发指南
-详细API文档请查看
-[API文档](./docs/doc.md)
+详细API文档请查看 
+[API文档](./docs/doc.md) 
 [示例](./docs/doc.md)
 
 
