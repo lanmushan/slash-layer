@@ -273,6 +273,7 @@ Layer.images({
     ]
 });
 ```
+![](./assets/images/images.png)
 
 # 提示框
 
