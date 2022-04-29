@@ -48,3 +48,6 @@ npm install slash-layer
 ## 部分功能预览效果
 
 ![img](./docs/assets/images/images.png)
+![img](./docs/assets/images/form.png)
+![img](./docs/assets/images/confim.png)
+![img](./docs/assets/images/success.png)
