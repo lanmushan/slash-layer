@@ -7,6 +7,11 @@
 1. 为了快速开发后台管理系统
 2. 后期适配移动端和指令式弹框
 
+### 安装
+```shell
+npm install slash-layer
+yarn add slash-layer
+```
 
 
 ## 源码
@@ -17,10 +22,9 @@
 ## 开发指南
 详细API文档请查看
 [API文档](./docs/doc.md)
-### 安装
-```shell
-npm install slash-layer
-```
+[示例](./docs/doc.md)
+
+
 
 ## 依赖
 
