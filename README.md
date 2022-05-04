@@ -23,7 +23,7 @@ yarn add slash-layer
 
 详细API文档请查看  
 [API文档](./docs/doc.md)  
-[文档](http://layer.lanmushan.site/)
+[文档](http://layer.lanmushan.site/)  
 [示例](http://layerdemo.lanmushan.site/)
 
 ## 依赖
