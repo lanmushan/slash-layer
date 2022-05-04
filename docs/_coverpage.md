@@ -9,5 +9,5 @@
 - 基于VUE3写的，没有兼容vue2
 - 单纯为了偷懒快速开发，所以这个也懒得写了
 
-[GitHub](https://github.com/docsifyjs/docsify/)
-[Get Started](#docsify)
+[GitHub](https://github.com/lanmushan/slash-layer)
+[GITEE](https://gitee.com/lanmushan/slash-layer)
