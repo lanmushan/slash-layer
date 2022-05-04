@@ -28,7 +28,7 @@
   "private": false,
   "scripts": {
     "serve": "vite",
-    "build": "vue-tsc --noEmit && vite build",
+    "build": "vite build",
     "lib": "vite build --config ./build/lib.config.ts",
     "doc": "docsify serve docs",
     "preview": "vite preview"

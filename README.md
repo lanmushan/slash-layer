@@ -8,11 +8,11 @@
 2. 后期适配移动端和指令式弹框
 
 ### 安装
+
 ```shell
 npm install slash-layer
 yarn add slash-layer
 ```
-
 
 ## 源码
 
@@ -20,11 +20,10 @@ yarn add slash-layer
 [gitee](https://gitee.com/lanmushan/slash-layer)
 
 ## 开发指南
+
 详细API文档请查看  
 [API文档](./docs/doc.md)   
 [示例](./docs/doc.md)
-
-
 
 ## 依赖
 
@@ -49,6 +48,7 @@ yarn add slash-layer
   "typescript": "~4.5.5"
 }
 ```
+
 ## 部分功能预览效果
 
 ![img](./docs/assets/images/images.png)
