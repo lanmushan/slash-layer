@@ -1,8 +1,8 @@
 {
   "name": "slash-layer",
   "version": "1.1.21",
-  "main": "dist/slash-layer.umd.js",
-  "module": "dist/slash-layer.es.js",
+  "main": "demo/slash-layer.umd.js",
+  "module": "demo/slash-layer.es.js",
   "typings": "dist/packages/index.d.ts",
   "description": "基于VUE3的模态框插件",
   "style": "dist/style.css",
@@ -13,7 +13,7 @@
     "模态框"
   ],
   "files": [
-    "dist"
+    "demo"
   ],
   "exports": {
     ".": {
@@ -28,7 +28,7 @@
   "private": false,
   "scripts": {
     "serve": "vite",
-    "build": "vite build",
+    "build": "vite build --config ./build/build.config.ts",
     "lib": "vite build --config ./build/lib.config.ts",
     "doc": "docsify serve docs",
     "preview": "vite preview"
