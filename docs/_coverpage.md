@@ -2,7 +2,7 @@
 
 [comment]: <> (![logo]&#40;_media/icon.svg&#41;)
 
-# SlashLayer <small>3.5</small>
+# SlashLayer <small>1.0</small>
 
 > Vue3轻量弹框插件
 
