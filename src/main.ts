@@ -1,6 +1,6 @@
 import {createApp} from 'vue'
-import App from './Doc.vue'
-import SlashLayer from '~/index';
+import App from './App.vue'
+import SlashLayer from '~';
 import ElementPlus from 'element-plus';
 import 'element-plus/dist/index.css';
 import {config} from './LayerConfig';

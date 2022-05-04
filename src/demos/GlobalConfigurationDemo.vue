@@ -41,6 +41,9 @@
 import HelloWorld from '@/components/HelloWorld.vue'
 import Layer from "~/components/Layer/ts/Layer";
 import UserForm from "@/components/UserForm.vue"
+import img1 from "@/assets/1.jpg";
+import img2 from "@/assets/2.jpg";
+import img3 from "@/assets/3.jpg";
 
 export default {
   name: "GlobalConfigurationDemo",
@@ -81,9 +84,10 @@ export default {
         min: false,
       })
     },
-    notMove(){
+    notMove() {
       Layer.open({
-        move:false,
+        allowMove: false,
+        title: "不可拖动"
       })
     },
     customPositionModal() {
@@ -123,10 +127,10 @@ export default {
       Layer.error("我是错误提示信息");
     },
     success() {
-     Layer.success("我是成功提示消息");
+      Layer.success("我是成功提示消息");
     },
     info() {
-     Layer.info("我是普通提示消息");
+      Layer.info("我是普通提示消息");
     },
     createForm() {
       Layer.createForm({
@@ -181,13 +185,13 @@ export default {
       Layer.images({
         imgList: [
           {
-            src: this.getSrc("/src/assets/1.jpg")
+            src: img1
           },
           {
-            src: this.getSrc("/src/assets/3.jpg")
+            src: img2
           },
           {
-            src: this.getSrc("/src/assets/2.jpg")
+            src: img3
           }
         ]
       });

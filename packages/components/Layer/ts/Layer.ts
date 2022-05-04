@@ -462,8 +462,9 @@ export default class Layer {
         }
     }
 
-    private static copyOpenConfigure(openConfigure: OpenConfigure): OpenConfigure {
+    public static copyOpenConfigure(openConfigure: OpenConfigure): OpenConfigure {
         let content = openConfigure.content;
+        delete openConfigure.content;
         let currentConfig = JSON.parse(JSON.stringify(openConfigure)) as OpenConfigure;
         currentConfig.content = content;
         currentConfig.btn = openConfigure.btn;
@@ -471,7 +472,7 @@ export default class Layer {
         return currentConfig;
     }
 
-    private static getOpenConfigure(openConfigure: OpenConfigure): OpenConfigure {
+    public static getOpenConfigure(openConfigure: OpenConfigure): OpenConfigure {
         let currentConfig = Layer.copyOpenConfigure(openConfigure) as OpenConfigure;
         const defConfigure = typeof Layer.configure == "undefined" ? {} as LayerGlobalConfigure : Layer.configure;
         if (!currentConfig.title) {
