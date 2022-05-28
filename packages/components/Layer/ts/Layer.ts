@@ -464,7 +464,7 @@ export default class Layer {
 
     public static copyOpenConfigure(openConfigure: OpenConfigure): OpenConfigure {
         let content = openConfigure.content;
-        delete openConfigure.content;
+        openConfigure.content = null;
         let currentConfig = JSON.parse(JSON.stringify(openConfigure)) as OpenConfigure;
         currentConfig.content = content;
         currentConfig.btn = openConfigure.btn;

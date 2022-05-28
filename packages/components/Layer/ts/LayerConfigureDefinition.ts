@@ -60,7 +60,7 @@ export interface OptionsContent {
 export interface OpenConfigure extends LayerConfigureDefinition {
     id?: string | undefined,
     position?: LayerPosition | string,
-    content: OptionsContent,
+    content: OptionsContent|null,
     header: boolean,
     allowMove: boolean,
     footer: boolean,
