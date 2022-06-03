@@ -1,8 +1,8 @@
 {
   "name": "slash-layer",
-  "version": "1.1.25",
-  "main": "demo/slash-layer.umd.js",
-  "module": "demo/slash-layer.es.js",
+  "version": "1.1.26",
+  "main": "dist/slash-layer.umd.js",
+  "module": "dist/slash-layer.es.js",
   "typings": "dist/packages/index.d.ts",
   "description": "基于VUE3的模态框插件",
   "style": "dist/style.css",
@@ -13,7 +13,7 @@
     "模态框"
   ],
   "files": [
-    "demo"
+    "dist"
   ],
   "exports": {
     ".": {
