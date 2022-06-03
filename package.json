@@ -1,6 +1,6 @@
 {
   "name": "slash-layer",
-  "version": "1.1.24",
+  "version": "1.1.25",
   "main": "demo/slash-layer.umd.js",
   "module": "demo/slash-layer.es.js",
   "typings": "dist/packages/index.d.ts",
