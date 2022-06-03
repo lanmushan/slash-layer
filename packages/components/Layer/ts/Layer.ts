@@ -1,15 +1,18 @@
-import {App, h, render} from "vue";
-import {createVNode, defineComponent, ref} from 'vue'
+import {App} from "vue";
 import {Mount, unMount} from '../../../util/Mount'
 
 
 import {
-    LayerPosition,
-    OpenConfigure,
-    MessageConfigure,
     ConfirmConfigure,
-    FormConfigure, SuccessDecideResult,
-    LayerGlobalConfigure, OptionsContent, ImagesConfigure
+    FormConfigure,
+    ImagesConfigure,
+    LayerGlobalConfigure,
+    LayerPosition,
+    MessageConfigure,
+    OpenConfigure,
+    OptionsContent,
+    SelectFileConfig,
+    SuccessDecideResult
 } from "./LayerConfigureDefinition"
 import Message from "~/components/LayerMessage/LayerMessage.vue"
 import Welcome from "~/components/LayerWelcome/LayerWelcome.vue"
@@ -17,10 +20,9 @@ import LayerWrapper from "~/components/LayerWrapper/LayerWrapper.vue";
 import Images from "~/components/LayerImages/LayerImages.vue";
 
 import LayerUtil from "./LayerUtil";
-import {createCommentVNode, createElementVNode} from "@vue/runtime-core";
 // import {loadingDirective} from "@/directives/LoadingDirective";
 import OpenConfigureUtil from "./OpenConfigureUtil"
-import {defaultLayerGlobalConfigure, layer_id_prefix, layer_mask_prefix, layer_root_prefix} from "../consts/LayerConst";
+import {defaultLayerGlobalConfigure, layer_id_prefix, layer_root_prefix} from "../consts/LayerConst";
 
 let temp = null;
 export default class Layer {
@@ -434,6 +436,29 @@ export default class Layer {
         if (elm) {
             elm["style"].zIndex = "" + zIndex;
         }
+    }
+
+    public static async selectFile(p: SelectFileConfig): Promise<any> {
+        return new Promise((resolve, reject) => {
+            let elm = document.createElement("input");
+            elm.id = LayerUtil.createId();
+            elm.type = "file";
+            if (typeof p.accept != undefined) {
+                elm.accept = p.accept.toString();
+            }
+            elm.multiple = true;
+            document.getElementsByTagName('body')[0].appendChild(elm);
+            elm.onchange = (evt) => {
+                if (elm.files && elm.files.length > 0) {
+                    resolve(elm.files);
+                } else {
+                    reject();
+                }
+                elm.remove();
+            }
+            elm.click();
+        })
+
     }
 
     public static close(id: string | undefined): void {

@@ -34,7 +34,7 @@
   <el-button type="primary" @click="images">图片查看器</el-button>
   <h2>功能性操作</h2>
   <el-button type="primary" @click="closeAll()">关闭全部</el-button>
-
+  <el-button type="primary" @click="selectFile">选择文件</el-button>
 </template>
 
 <script>
@@ -161,6 +161,11 @@ export default {
         alert("成功反馈")
       }).catch(() => {
         alert("取消反馈")
+      });
+    },
+    selectFile(){
+      Layer.selectFile({
+
       });
     },
     readForm() {

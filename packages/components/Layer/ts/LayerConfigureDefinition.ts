@@ -123,3 +123,7 @@ export interface FormConfigure {
     theme?: string,
     mask?: boolean,
 }
+
+export interface SelectFileConfig{
+    accept:Array<string>[],
+}
