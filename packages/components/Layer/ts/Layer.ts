@@ -331,6 +331,7 @@ export default class Layer {
             autoCloseTime: 0,
             loadingTime: 0,
             position: "full",
+            mask:true,
             content: {
                 component: Images,
                 props: config
@@ -364,6 +365,7 @@ export default class Layer {
     }
 
     static createHtmlDom(config: OpenConfigure): void {
+
         let rootDiv: HTMLElement = document.createElement("div");
         if (config.mask) {
             rootDiv.id = `${layer_root_prefix}${config.id}`
@@ -391,7 +393,6 @@ export default class Layer {
         if (typeof options.id === "undefined") {
             options.id = `${layer_id_prefix}_${LayerUtil.createId()}`;
         }
-        console.log("弹框参数:", options);
         this.createHtmlDom(options);
         const elm: HTMLElement | null = document.getElementById(options.id);
         const {el, vNode} = Mount(LayerWrapper, {
@@ -443,7 +444,7 @@ export default class Layer {
             let elm = document.createElement("input");
             elm.id = LayerUtil.createId();
             elm.type = "file";
-            if (typeof p.accept != undefined) {
+            if (typeof p.accept != 'undefined') {
                 elm.accept = p.accept.toString();
             }
             elm.multiple = true;
