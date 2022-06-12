@@ -6,6 +6,7 @@ import {
     ConfirmConfigure,
     FormConfigure,
     ImagesConfigure,
+    LayerCache,
     LayerGlobalConfigure,
     LayerPosition,
     MessageConfigure,
@@ -20,16 +21,13 @@ import LayerWrapper from "~/components/LayerWrapper/LayerWrapper.vue";
 import Images from "~/components/LayerImages/LayerImages.vue";
 
 import LayerUtil from "./LayerUtil";
-// import {loadingDirective} from "@/directives/LoadingDirective";
 import OpenConfigureUtil from "./OpenConfigureUtil"
 import {defaultLayerGlobalConfigure, layer_id_prefix, layer_root_prefix} from "../consts/LayerConst";
 
-let temp = null;
 export default class Layer {
     static configure: LayerGlobalConfigure
-    static wrapId: string = "slash_layer";
-    elm: HTMLElement | null | undefined;
     static app: App | undefined
+    static layerCache: Map<string, LayerCache> = new Map<string, LayerCache>();
 
     public static init(config?: LayerGlobalConfigure, app?: App) {
         Layer.app = app;
@@ -44,9 +42,45 @@ export default class Layer {
             Layer.configure = obj;
             console.log("全量配置信息", obj);
         }
+        let timer: NodeJS.Timeout | null = null;
+        window.addEventListener('resize', function () {
+            if (timer) {
+                clearTimeout(timer);
+            }
+            timer = setTimeout(() => {
+                if (timer) {
+                    clearTimeout(timer);
+                }
+                console.log("bianhuale==============");
+                Layer.layoutModal();
+            }, 200)
+
+        })
         return Layer;
     }
 
+    private static layoutModal(): void {
+        const elms: HTMLCollectionOf<Element> = document.getElementsByClassName("slash-layer");
+        if (!elms) {
+            return;
+        }
+        for (let i = 0; i < elms.length; i++) {
+            const elm: HTMLDivElement = elms[i] as HTMLDivElement;
+
+            if (/slash-layer-swin/i.test(elm.className)) {
+                let scaleX = 200 / elm.offsetWidth;
+                elm.style.left = LayerUtil.getViewPortWidth() - elm.offsetWidth * scaleX + "px";
+            } else {
+                const width = elm.offsetLeft + elm.offsetWidth;
+                const viewWidth = LayerUtil.getViewPortWidth();
+                if (width > viewWidth) {
+                    const left = elm.offsetLeft - (width - viewWidth);
+                    elm.style.left = `${left > 0 ? left : 0}px`
+                }
+            }
+
+        }
+    }
 
     /**
      * 模态框
@@ -56,6 +90,10 @@ export default class Layer {
         Layer.open(config);
     }
 
+    /**
+     * 确认框
+     * @param config
+     */
     public static confirm(config: ConfirmConfigure | string): Promise<any> {
         let _that = this;
         let tempConfig: ConfirmConfigure | null = null;
@@ -169,6 +207,10 @@ export default class Layer {
         })
     }
 
+    /**
+     * 自动提示
+     * @param msg
+     */
     public static autoInfo(msg: SuccessDecideResult): void {
         if (msg.result) {
             this.success(msg.msg);
@@ -178,7 +220,7 @@ export default class Layer {
     }
 
     /**
-     * 新增表单
+     * 更新表单
      * @param config
      */
     public static updateForm(config: FormConfigure): Promise<any> {
@@ -232,7 +274,7 @@ export default class Layer {
 
 
     /**
-     * 新增表单
+     * 只读表单
      * @param config
      */
     public static readForm(config: FormConfigure): Promise<any> {
@@ -260,7 +302,10 @@ export default class Layer {
         })
     }
 
-
+    /**
+     * form表单
+     * @param config
+     */
     public static form(config: FormConfigure): void {
         let formConfig = {
             title: config.title,
@@ -280,6 +325,10 @@ export default class Layer {
         return this.open(openConfig);
     }
 
+    /**
+     * 成功提示
+     * @param config
+     */
     public static success(config: MessageConfigure | string): void {
         let conf: any = {} as MessageConfigure;
         conf.iconColor = "#67c23a";
@@ -293,6 +342,10 @@ export default class Layer {
         return Layer.message(conf);
     }
 
+    /**
+     * 错误提示
+     * @param config
+     */
     public static error(config: MessageConfigure | string): void {
         let conf: any = {} as MessageConfigure;
         conf.iconColor = "#ff0000";
@@ -319,7 +372,10 @@ export default class Layer {
         this.message(conf);
     }
 
-
+    /**
+     * 图片
+     * @param config
+     */
     public static images(config: ImagesConfigure): void {
         const openConfig = {
             title: "",
@@ -331,7 +387,7 @@ export default class Layer {
             autoCloseTime: 0,
             loadingTime: 0,
             position: "full",
-            mask:true,
+            mask: true,
             content: {
                 component: Images,
                 props: config
@@ -340,6 +396,10 @@ export default class Layer {
         this.open(openConfig);
     }
 
+    /**
+     * 提示
+     * @param config
+     */
     public static message(config: MessageConfigure): void {
         let width = config.msg.length * 25 > 200 ? config.msg.length * 20 : 200;
         const openConfig = {
@@ -401,7 +461,6 @@ export default class Layer {
                 class: options.theme
             }, app: this.app as any, elm: elm as any
         })
-        temp = vNode;
         if (options.autoCloseTime && options.autoCloseTime > 0) {
             setTimeout(() => {
                 Layer.close(options.id);
@@ -410,6 +469,9 @@ export default class Layer {
 
     }
 
+    /**
+     * 关闭所有
+     */
     public static closeAll() {
         let elms: NodeListOf<HTMLDivElement> = document.querySelectorAll(".slash-layer");
         if (elms) {
@@ -419,6 +481,10 @@ export default class Layer {
         }
     }
 
+    /**
+     * 置顶
+     * @param id
+     */
     public static top(id: string | undefined): void {
 
         if (!id) {
@@ -439,6 +505,10 @@ export default class Layer {
         }
     }
 
+    /**
+     * 选择文件
+     * @param p
+     */
     public static async selectFile(p: SelectFileConfig): Promise<any> {
         return new Promise((resolve, reject) => {
             let elm = document.createElement("input");
@@ -462,10 +532,15 @@ export default class Layer {
 
     }
 
+    /**
+     * 关闭
+     * @param id
+     */
     public static close(id: string | undefined): void {
         if (!id) {
             return;
         }
+        Layer.layerCache.delete(id);
         const layer = document.getElementById(id);
         const mask = document.getElementById(`${layer_root_prefix}${id}`)
         if (mask) {
@@ -488,18 +563,46 @@ export default class Layer {
         }
     }
 
-    public static copyOpenConfigure(openConfigure: OpenConfigure): OpenConfigure {
-        let content = openConfigure.content;
-        openConfigure.content = null;
-        let currentConfig = JSON.parse(JSON.stringify(openConfigure)) as OpenConfigure;
-        currentConfig.content = content;
-        currentConfig.btn = openConfigure.btn;
-        currentConfig.closeCallBack = openConfigure.closeCallBack;
-        return currentConfig;
+    /**
+     * 切换大小
+     * @param id
+     */
+    public static toggleSize(id: string) {
+        const layerCache = Layer.layerCache.get(id);
+        if (!layerCache) {
+            Layer.max(id);
+            return;
+        }
+        if (layerCache.full) {
+            Layer.restoreSize(id);
+        } else {
+            Layer.max(id);
+        }
+    }
+
+    /**
+     * 重置大小
+     * @param id
+     */
+    public static restoreSize(id: string) {
+        const elm: HTMLElement | null = document.getElementById(id);
+        const layerCache: LayerCache | undefined = Layer.layerCache.get(id);
+        if (elm && layerCache) {
+            Layer.position(id, layerCache.position);
+            const footers: HTMLCollection | null = elm.getElementsByClassName("footer");
+            if (footers && footers.length > 0) {
+                const footer: HTMLElement = footers[0] as HTMLElement;
+                footer['style'].position = ""
+            }
+        }
+        if (layerCache) {
+            layerCache.full = false;
+            Layer.layerCache.set(id, layerCache);
+        }
     }
 
     public static getOpenConfigure(openConfigure: OpenConfigure): OpenConfigure {
-        let currentConfig = Layer.copyOpenConfigure(openConfigure) as OpenConfigure;
+        let currentConfig = LayerUtil.copyOpenConfigure(openConfigure) as OpenConfigure;
         const defConfigure = typeof Layer.configure == "undefined" ? {} as LayerGlobalConfigure : Layer.configure;
         if (!currentConfig.title) {
             currentConfig.title = defConfigure.title
@@ -575,6 +678,132 @@ export default class Layer {
 
     private getRelativeLeft(width: number): number {
         return LayerUtil.getViewPortWidth() / 2 - width / 2
+    }
+
+    public static min(id: string): void {
+        let elm = document.getElementById(id);
+        if (!elm) {
+            return;
+        }
+        const sWinPosition: LayerPosition = {} as LayerPosition;
+        sWinPosition.left = elm.offsetLeft;
+        sWinPosition.top = elm.offsetTop;
+        sWinPosition.height = elm.offsetHeight;
+        sWinPosition.width = elm.offsetWidth;
+        let scaleX = 200 / elm.offsetWidth;
+        let scaleY = 120 / elm.offsetHeight;
+        elm.style.transform = `scale(${scaleX},${scaleY})`;
+        elm.style.left = LayerUtil.getViewPortWidth() - elm.offsetWidth * scaleX + "px";
+
+        let elms = document.querySelectorAll(".slash-layer-swin");
+        let sumHeight = 0;
+        if (elms) {
+            for (let i = 0; i < elms.length; i++) {
+                const elm = elms[i] as HTMLDivElement;
+                let offsetHeight = elm.offsetHeight;
+                let scale = 120 / offsetHeight;
+                sumHeight += offsetHeight * scale + 10;
+            }
+        }
+        elm.style.top = sumHeight + "px";
+        elm.classList.add("slash-layer-swin");
+        const childElm = elm.getElementsByClassName("s-win-flg")[0];
+        childElm.classList.add("s-win");
+        let cache: LayerCache | undefined = Layer.layerCache.get(id);
+        if (cache) {
+            cache.sWinPosition = sWinPosition;
+        } else {
+            cache = {} as LayerCache;
+        }
+        cache.sWinPosition = sWinPosition;
+        Layer.layerCache.set(id, cache);
+    }
+
+    public static max(id: string): void {
+        const elm: HTMLElement | null = document.getElementById(id);
+        if (!elm) {
+            return
+        }
+        const width = LayerUtil.getViewPortWidth();
+        const height = LayerUtil.getViewPortHeight();
+        const homePosition: LayerPosition = {} as LayerPosition;
+        homePosition.left = elm.offsetLeft;
+        homePosition.top = elm.offsetTop;
+        homePosition.height = elm.offsetHeight;
+        homePosition.width = elm.offsetWidth;
+        const layerCacheInstance: LayerCache = {
+            position: homePosition,
+            full: false
+        } as LayerCache;
+        layerCacheInstance.full = true;
+        Layer.layerCache.set(id, layerCacheInstance);
+        elm.style.width = "100%";
+        elm.style.height = height + 'px';
+        elm.style.top = 0 + "px";
+        elm.style.left = 0 + "px";
+        const footers: HTMLCollection | null = elm.getElementsByClassName("footer");
+        if (footers && footers.length > 0) {
+            const footer: HTMLElement = footers[0] as HTMLElement;
+            footer['style'].position = 'absolute'
+        }
+
+        console.log(Layer.layerCache);
+    }
+
+    public static normal(id: string): void {
+        const layerIn = Layer.layerCache.get(id);
+        if (!layerIn) {
+            return;
+        }
+        const sWinHomePosition: LayerPosition = layerIn.sWinPosition;
+        const elm: HTMLElement | null = document.getElementById(id);
+        if (elm) {
+            elm.style.transform = ``
+            elm.classList.remove("slash-layer-swin");
+            elm.style.width = sWinHomePosition.width + "px";
+            elm.style.height = sWinHomePosition.height + "px";
+            elm.style.top = sWinHomePosition.top + "px";
+            elm.style.left = sWinHomePosition.left + "px";
+            const childElm = elm.getElementsByClassName("s-win-flg")[0];
+            if (childElm) {
+                childElm.classList.remove("s-win");
+            }
+        }
+
+
+        Layer.top(id);
+        Layer.doRearrange();
+        // Layer.layoutModal();
+    }
+
+    private static doRearrange() {
+        const elms: HTMLCollection = document.getElementsByClassName("slash-layer-swin");
+        if (elms) {
+            let sumHeight = 0;
+            for (let i = 0; i < elms.length; i++) {
+                let elm = elms[i] as HTMLDivElement;
+                let offsetHeight = elm.offsetHeight;
+                let offsetWidth = elm.offsetWidth;
+                let scaleY = 120 / offsetHeight;
+                elm.style.top = sumHeight + "px";
+                sumHeight += offsetHeight * scaleY + 10;
+            }
+        }
+    }
+
+    /**
+     *
+     * @param id
+     * @param position
+     */
+    public static position(id: string, position: LayerPosition) {
+        const elm: HTMLElement | null = document.getElementById(id);
+        if (elm) {
+            elm.style.width = position.width + "px";
+            elm.style.height = position.height + "px";
+            elm.style.top = position.top + "px";
+            elm.style.left = position.left + "px";
+        }
     }
 }
 

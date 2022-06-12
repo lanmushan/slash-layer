@@ -1,4 +1,8 @@
 import {layer_id_prefix} from "../consts/LayerConst";
+import {LayerGlobalConfigure, OpenConfigure, OptionsContent} from "~/components/Layer/ts/LayerConfigureDefinition";
+import Welcome from "~/components/LayerWelcome/LayerWelcome.vue";
+import OpenConfigureUtil from "~/components/Layer/ts/OpenConfigureUtil";
+import {Layer} from "~";
 
 export default class LayerUtil {
     static checkPromise(obj: any | Promise<object>) {
@@ -85,6 +89,82 @@ export default class LayerUtil {
             left[key] = right[key];
         }
         return left;
+    }
+    public  static copyOpenConfigure(openConfigure: OpenConfigure): OpenConfigure {
+        let content = openConfigure.content;
+        openConfigure.content = null;
+        let currentConfig = JSON.parse(JSON.stringify(openConfigure)) as OpenConfigure;
+        currentConfig.content = content;
+        currentConfig.btn = openConfigure.btn;
+        currentConfig.closeCallBack = openConfigure.closeCallBack;
+        return currentConfig;
+    }
+    public static getOpenConfigure(openConfigure: OpenConfigure): OpenConfigure {
+        let currentConfig = LayerUtil.copyOpenConfigure(openConfigure) as OpenConfigure;
+        const defConfigure = typeof Layer.configure == "undefined" ? {} as LayerGlobalConfigure : Layer.configure;
+        if (!currentConfig.title) {
+            currentConfig.title = defConfigure.title
+        }
+        if (typeof currentConfig.header === "undefined") {
+            if (defConfigure.header) {
+                currentConfig.header = defConfigure.header
+            } else {
+                currentConfig.header = false;
+            }
+        }
+        if (typeof currentConfig.footer === "undefined") {
+            currentConfig.footer = defConfigure.footer;
+        }
+        if (!currentConfig.title) {
+            currentConfig.title = defConfigure.title
+        }
+
+        if (typeof currentConfig.max === 'undefined') {
+            currentConfig.max = defConfigure.max;
+        }
+        if (typeof currentConfig.min === 'undefined') {
+            currentConfig.min = defConfigure.min;
+        }
+
+        if (typeof currentConfig.autoCloseTime === 'undefined') {
+            currentConfig.autoCloseTime = defConfigure.autoCloseTime
+        }
+        if (typeof currentConfig.loadingText === 'undefined') {
+            if (defConfigure.loadingText) {
+                currentConfig.loadingText = defConfigure.loadingText;
+            } else {
+                currentConfig.loadingText = "正在加载中";
+            }
+        }
+
+        if (typeof currentConfig.loadingTime === 'undefined') {
+            currentConfig.loadingTime = defConfigure.loadingTime
+        }
+        if (typeof currentConfig.content === 'undefined') {
+            currentConfig.content = {
+                component: Welcome
+            } as OptionsContent
+        }
+        if (typeof currentConfig.theme === "undefined" && typeof defConfigure.theme != 'undefined') {
+            currentConfig.theme = defConfigure.theme;
+        }
+        if (typeof currentConfig.dbFull === "undefined") {
+            if (defConfigure.dbFull) {
+                currentConfig.dbFull = defConfigure.dbFull;
+            } else {
+                currentConfig.dbFull = true;
+            }
+        }
+        if (typeof currentConfig.allowMove === "undefined") {
+            if (defConfigure.allowMove) {
+                currentConfig.allowMove = defConfigure.allowMove;
+            } else {
+                currentConfig.allowMove = false;
+            }
+        }
+        //处理坐标问题
+        currentConfig.position = OpenConfigureUtil.getOpenPosition(currentConfig.position, Layer.configure);
+        return currentConfig;
     }
 
     static deepClone(obj: any): Object {

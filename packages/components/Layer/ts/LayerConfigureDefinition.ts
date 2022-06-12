@@ -8,7 +8,11 @@ export interface LayerPosition {
     top: number,
     left: number
 }
-
+export interface LayerCache{
+    full:boolean,
+    position:LayerPosition,
+    sWinPosition:LayerPosition
+}
 export interface Btn {
     title: {}
 }

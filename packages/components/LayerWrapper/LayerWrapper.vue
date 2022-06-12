@@ -20,25 +20,20 @@
       </div>
     </div>
     <layer-footer @btnClick="onBtnCLick" :id="options.id" :btnList="btnList" v-if="footer"></layer-footer>
-    <div class="s-win" v-if="sWin" @click="doSwinToNormal">
+    <div class="s-win-flg"  @click="doSwinToNormal">
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import {defineComponent, ref, PropType, reactive, onMounted, useTransitionState} from "vue";
+import {defineComponent, onMounted, PropType, reactive, ref, toRefs} from "vue";
 import LayerHeader from "./LayerHeader.vue";
 import LayerContent from "./LayerContent";
 import LayerFooter from "./LayerFooter.vue";
 import {LayerPosition, OpenBtn, OpenConfigure} from "../Layer/ts/LayerConfigureDefinition";
 import LayerUtil from "../Layer/ts/LayerUtil";
 import Layer from "../Layer/ts/Layer";
-
-import {toRefs} from "vue";
-import {getCurrentInstance} from "vue";
-import {ComponentInternalInstance, ComponentPublicInstance} from "@vue/runtime-core";
 import useCurrentInstance from "../Layer/ts/UseCurrentInstance";
-import {tr} from "element-plus/lib/locale";
 
 export default defineComponent({
   name: "LayerWrapper",
@@ -72,28 +67,29 @@ export default defineComponent({
   },
   methods: {
     onToggleSize() {
-      if (!this.dbFull) {
-        return;
-      }
-      if (!this.full) {
-        this.doFullScreen()
-      } else {
-        this.doRestoreSize();
-      }
+      // if (!this.dbFull) {
+      //   return;
+      // }
+      // if (!this.full) {
+      //   this.doFullScreen()
+      // } else {
+      //   this.doRestoreSize();
+      // }
+      Layer.toggleSize(this.id);
     },
     doRestoreSize() {
-      const elm: HTMLElement | null = document.getElementById(this.id);
-      if (elm) {
-        this.setPosition(this.homePosition);
-        this.sWin = false;
-        this.drag = true;
-        const footers: HTMLCollection | null = elm.getElementsByClassName("footer");
-        if (footers && footers.length > 0) {
-          const footer: HTMLElement = footers[0] as HTMLElement;
-          footer['style'].position = ""
-        }
-      }
-      this.full = false;
+      // const elm: HTMLElement | null = document.getElementById(this.id);
+      // if (elm) {
+      //   this.setPosition(this.homePosition);
+      //   this.sWin = false;
+      //   this.drag = true;
+      //   const footers: HTMLCollection | null = elm.getElementsByClassName("footer");
+      //   if (footers && footers.length > 0) {
+      //     const footer: HTMLElement = footers[0] as HTMLElement;
+      //     footer['style'].position = ""
+      //   }
+      // }
+      // this.full = false;
     },
     setPosition(position: LayerPosition) {
       const elm: HTMLElement | null = document.getElementById(this.id);
@@ -105,95 +101,97 @@ export default defineComponent({
       }
     },
     doFullScreen() {
-      const elm: HTMLElement | null = document.getElementById(this.id);
-      if (!elm) {
-
-        return
-      }
-      const width = LayerUtil.getViewPortWidth();
-      const height = LayerUtil.getViewPortHeight();
-      this.homePosition.left = elm.offsetLeft;
-      this.homePosition.top = elm.offsetTop;
-      this.homePosition.height = elm.offsetHeight;
-      this.homePosition.width = elm.offsetWidth;
-      elm.style.width = "100%";
-      elm.style.height = height + 'px';
-      elm.style.top = 0 + "px";
-      elm.style.left = 0 + "px";
-      const footers: HTMLCollection | null = elm.getElementsByClassName("footer");
-      if (footers && footers.length > 0) {
-        const footer: HTMLElement = footers[0] as HTMLElement;
-        footer['style'].position = 'absolute'
-      }
-      this.full = true;
+      // const elm: HTMLElement | null = document.getElementById(this.id);
+      // if (!elm) {
+      //   return
+      // }
+      // const width = LayerUtil.getViewPortWidth();
+      // const height = LayerUtil.getViewPortHeight();
+      // this.homePosition.left = elm.offsetLeft;
+      // this.homePosition.top = elm.offsetTop;
+      // this.homePosition.height = elm.offsetHeight;
+      // this.homePosition.width = elm.offsetWidth;
+      // elm.style.width = "100%";
+      // elm.style.height = height + 'px';
+      // elm.style.top = 0 + "px";
+      // elm.style.left = 0 + "px";
+      // const footers: HTMLCollection | null = elm.getElementsByClassName("footer");
+      // if (footers && footers.length > 0) {
+      //   const footer: HTMLElement = footers[0] as HTMLElement;
+      //   footer['style'].position = 'absolute'
+      // }
+      // this.full = true;
+      Layer.max(this.id);
     },
     doRearrange() {
-      const elms: HTMLCollection = document.getElementsByClassName(".slash-layer-swin");
-      if (elms) {
-        let sumHeight = 0;
-        for (let i = 0; i < elms.length; i++) {
-          let elm = elms[i] as HTMLDivElement;
-          let offsetHeight = elm.offsetHeight;
-          let offsetWidth = elm.offsetWidth;
-          let scaleY = 120 / offsetHeight;
-          elm.style.top = sumHeight + "px";
-          sumHeight += offsetHeight * scaleY + 10;
-
-        }
-      }
+      // const elms: HTMLCollection = document.getElementsByClassName(".slash-layer-swin");
+      // if (elms) {
+      //   let sumHeight = 0;
+      //   for (let i = 0; i < elms.length; i++) {
+      //     let elm = elms[i] as HTMLDivElement;
+      //     let offsetHeight = elm.offsetHeight;
+      //     let offsetWidth = elm.offsetWidth;
+      //     let scaleY = 120 / offsetHeight;
+      //     elm.style.top = sumHeight + "px";
+      //     sumHeight += offsetHeight * scaleY + 10;
+      //
+      //   }
+      // }
     },
     doMinSize() {
-      if (!this.id) {
-        return;
-      }
-      let elm = document.getElementById(this.id);
-      if (!elm) {
-        return;
-      }
-      this.drag = false;
-      this.sWinHomePosition.left = elm.offsetLeft;
-      this.sWinHomePosition.top = elm.offsetTop;
-      this.sWinHomePosition.height = elm.offsetHeight;
-      this.sWinHomePosition.width = elm.offsetWidth;
-
-      let scaleX = 200 / elm.offsetWidth;
-      let scaleY = 120 / elm.offsetHeight;
-
-      elm.style.transform = `scale(${scaleX},${scaleY})`;
-      elm.style.left = LayerUtil.getViewPortWidth() - elm.offsetWidth * scaleX + "px";
-      let elms = document.querySelectorAll(".slash-layer-swin");
-      let sumHeight = 0;
-      if (elms) {
-        for (let i = 0; i < elms.length; i++) {
-          const elm = elms[i] as HTMLDivElement;
-          let offsetHeight = elm.offsetHeight;
-          let scale = 120 / offsetHeight;
-          sumHeight += offsetHeight * scale + 10;
-        }
-      }
-      elm.style.top = sumHeight + "px";
-      elm.classList.add("slash-layer-swin")
-      this.sWin = true;
+      // if (!this.id) {
+      //   return;
+      // }
+      // let elm = document.getElementById(this.id);
+      // if (!elm) {
+      //   return;
+      // }
+      // this.drag = false;
+      // this.sWinHomePosition.left = elm.offsetLeft;
+      // this.sWinHomePosition.top = elm.offsetTop;
+      // this.sWinHomePosition.height = elm.offsetHeight;
+      // this.sWinHomePosition.width = elm.offsetWidth;
+      //
+      // let scaleX = 200 / elm.offsetWidth;
+      // let scaleY = 120 / elm.offsetHeight;
+      //
+      // elm.style.transform = `scale(${scaleX},${scaleY})`;
+      // elm.style.left = LayerUtil.getViewPortWidth() - elm.offsetWidth * scaleX + "px";
+      // let elms = document.querySelectorAll(".slash-layer-swin");
+      // let sumHeight = 0;
+      // if (elms) {
+      //   for (let i = 0; i < elms.length; i++) {
+      //     const elm = elms[i] as HTMLDivElement;
+      //     let offsetHeight = elm.offsetHeight;
+      //     let scale = 120 / offsetHeight;
+      //     sumHeight += offsetHeight * scale + 10;
+      //   }
+      // }
+      // elm.style.top = sumHeight + "px";
+      // elm.classList.add("slash-layer-swin")
+      // this.sWin = true;
+      Layer.min(this.id);
     },
     doSwinToNormal() {
-      const elm: HTMLElement | null = document.getElementById(this.id);
-      if (elm) {
-        elm.style.transform = ``
-        elm.classList.remove("slash-layer-swin");
-        elm.style.width = this.sWinHomePosition.width + "px";
-        elm.style.height = this.sWinHomePosition.height + "px";
-        elm.style.top = this.sWinHomePosition.top + "px";
-        elm.style.left = this.sWinHomePosition.left + "px";
-      }
-      this.drag = true;
-      this.sWin = false;
-      this.onTop();
-      this.doRearrange()
+      // const elm: HTMLElement | null = document.getElementById(this.id);
+      // if (elm) {
+      //   elm.style.transform = ``
+      //   elm.classList.remove("slash-layer-swin");
+      //   elm.style.width = this.sWinHomePosition.width + "px";
+      //   elm.style.height = this.sWinHomePosition.height + "px";
+      //   elm.style.top = this.sWinHomePosition.top + "px";
+      //   elm.style.left = this.sWinHomePosition.left + "px";
+      // }
+      // this.drag = true;
+      // this.sWin = false;
+      // this.onTop();
+      // this.doRearrange()
+      Layer.normal(this.id);
     },
     onClose() {
       Layer.close(this.id);
       if (this.$props.options.closeCallBack) {
-        this.$props.options.closeCallBack();
+         this.$props.options.closeCallBack();
       }
     },
     onTop() {
