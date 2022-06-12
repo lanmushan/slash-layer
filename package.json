@@ -4,7 +4,12 @@
   "main": "dist/slash-layer.umd.js",
   "module": "dist/slash-layer.es.js",
   "typings": "dist/packages/index.d.ts",
-  "description": "基于VUE3的模态框插件",
+  "description": "基于VUE3开发的Web弹出层插件，内置各种常用尺寸模态框、提示消息等，可以轻松完成后台管理系统等业务表单开发，全身心投入摸鱼事业!",
+  "repository": {
+    "type ": "git",
+    "url": "https://github.com/lanmushan/slash-layer"
+  },
+  "homepage": "https://layer.lanmushan.site/",
   "style": "dist/style.css",
   "keyword": [
     "vue3",
