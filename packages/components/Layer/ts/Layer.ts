@@ -42,7 +42,7 @@ export default class Layer {
             Layer.configure = obj;
             console.log("全量配置信息", obj);
         }
-        let timer: NodeJS.Timeout | null = null;
+        let timer: any | null = null;
         window.addEventListener('resize', function () {
             if (timer) {
                 clearTimeout(timer);
