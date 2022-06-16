@@ -8,6 +8,21 @@ yarn add slash-layer
 npm install slash-layer
 ```
 
+## 使用
+
+```typescript
+import {createApp} from 'vue'
+import App from './App.vue'
+import SlashLayer from 'slash-layer';
+import {config} from './LayerConfig';
+import 'slash-layer/dist/style.css'
+
+let app = createApp(App);
+app.use(SlashLayer, config)
+app.mount('#app')
+
+```
+
 ## 全局配置
 
 ```typescript
@@ -35,20 +50,6 @@ export const config = {
     }
 } as LayerGlobalConfigure
 export default config
-```
-
-## 使用
-
-```typescript
-import {createApp} from 'vue'
-import App from './Doc.vue'
-import SlashLayer from 'slash-layer';
-import {config} from './LayerConfig';
-
-let app = createApp(App);
-app.use(SlashLayer, config)
-app.mount('#app')
-
 ```
 
 # 模态框示例
@@ -273,6 +274,7 @@ Layer.images({
     ]
 });
 ```
+
 ![](./assets/images/images.png)
 
 # 提示框
