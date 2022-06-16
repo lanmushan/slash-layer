@@ -184,12 +184,20 @@ export default class Layer {
                         callback: (instance: any, data: any) => {
                             instance.value.doSubmit().then((msg: SuccessDecideResult) => {
                                 const result: SuccessDecideResult = this.configure.successDecide(msg);
+                                if (result == undefined || result instanceof TypeError) {
+                                    console.error("错误:", msg);
+                                    return;
+                                }
                                 this.autoInfo(result);
                                 if (result.result) {
                                     Layer.close(instance.value.id);
                                 }
                                 resolve(result);
                             }).catch((msg: any) => {
+                                if (msg == undefined || msg instanceof TypeError) {
+                                    console.error("错误:", msg);
+                                    return;
+                                }
                                 if (msg) {
                                     const result: SuccessDecideResult = this.configure.successDecide(msg);
                                     this.autoInfo(result);
@@ -250,12 +258,20 @@ export default class Layer {
                         callback: (instance: any, data: any) => {
                             instance.value.doUpdate().then((msg: SuccessDecideResult) => {
                                 const result: SuccessDecideResult = this.configure.successDecide(msg);
+                                if (result == undefined || msg instanceof TypeError) {
+                                    console.error("错误:", msg);
+                                    return;
+                                }
                                 this.autoInfo(result);
                                 if (result.result) {
                                     Layer.close(instance.value.id);
                                 }
                                 resolve(result);
                             }).catch((msg: any) => {
+                                if (msg == undefined || msg instanceof TypeError) {
+                                    console.error("错误:", msg);
+                                    return;
+                                }
                                 if (msg) {
                                     const result: SuccessDecideResult = this.configure.successDecide(msg);
                                     this.autoInfo(result);
@@ -309,10 +325,6 @@ export default class Layer {
     public static form(config: FormConfigure): void {
         let formConfig = {
             title: config.title,
-            max: true,
-            min: true,
-            footer: true,
-            header: true,
             loadingTime: 200,
             autoCloseTime: 0,
             position: {
@@ -359,7 +371,7 @@ export default class Layer {
         this.message(conf);
     }
 
-    public static info(config: MessageConfigure): void {
+    public static info(config: MessageConfigure | string): void {
         let conf: any = {} as MessageConfigure;
         conf.iconColor = "#474444";
         conf.icon = "&#xe649;"
@@ -401,6 +413,9 @@ export default class Layer {
      * @param config
      */
     public static message(config: MessageConfigure): void {
+        if (config == null || config == undefined || !config.msg) {
+            console.error("无提示消息", config)
+        }
         let width = config.msg.length * 25 > 200 ? config.msg.length * 20 : 200;
         const openConfig = {
             title: config.title,
@@ -453,6 +468,7 @@ export default class Layer {
         if (typeof options.id === "undefined") {
             options.id = `${layer_id_prefix}_${LayerUtil.createId()}`;
         }
+        console.log("最终配置:", options);
         this.createHtmlDom(options);
         const elm: HTMLElement | null = document.getElementById(options.id);
         const {el, vNode} = Mount(LayerWrapper, {
@@ -602,8 +618,11 @@ export default class Layer {
     }
 
     public static getOpenConfigure(openConfigure: OpenConfigure): OpenConfigure {
+        console.log("当前配置", openConfigure);
         let currentConfig = LayerUtil.copyOpenConfigure(openConfigure) as OpenConfigure;
+
         const defConfigure = typeof Layer.configure == "undefined" ? {} as LayerGlobalConfigure : Layer.configure;
+        console.log("默认配置", defConfigure);
         if (!currentConfig.title) {
             currentConfig.title = defConfigure.title
         }

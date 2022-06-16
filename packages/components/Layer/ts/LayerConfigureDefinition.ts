@@ -57,13 +57,14 @@ export interface SuccessDecideResult {
 
 export interface OptionsContent {
     component: DefineComponent | any | object,
-    props?: PropType<any> | any
+    props?: PropType<any> | any,
+    parent?:any
 }
 
 
 export interface OpenConfigure extends LayerConfigureDefinition {
     id?: string | undefined,
-    position?: LayerPosition | string,
+    position?: LayerPosition | string|any,
     content: OptionsContent|null,
     header: boolean,
     allowMove: boolean,
@@ -119,7 +120,7 @@ export interface FormConfigure {
     content: OptionsContent,
     header?: boolean,
     footer?: boolean,
-    btn: Array<OpenBtn>
+    btn: Array<OpenBtn>|undefined
     autoCloseTime: number
     runMode?: string,
     className?: string | undefined

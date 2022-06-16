@@ -20,7 +20,7 @@
       </div>
     </div>
     <layer-footer @btnClick="onBtnCLick" :id="options.id" :btnList="btnList" v-if="footer"></layer-footer>
-    <div class="s-win-flg"  @click="doSwinToNormal">
+    <div class="s-win-flg" @click="doSwinToNormal">
     </div>
   </div>
 </template>
@@ -191,7 +191,7 @@ export default defineComponent({
     onClose() {
       Layer.close(this.id);
       if (this.$props.options.closeCallBack) {
-         this.$props.options.closeCallBack();
+        this.$props.options.closeCallBack();
       }
     },
     onTop() {
@@ -210,7 +210,7 @@ export default defineComponent({
   created() {
     this.doInit();
   },
-  setup(props, ctx) {
+  setup: function (props, ctx) {
     const {
       id,
       title,
@@ -229,7 +229,10 @@ export default defineComponent({
     if (!btnList.value && footer) {
       footer.value = false;
     }
-    if (runMode) {
+    if (content.value && !content.value.props) {
+      content.value.props = {};
+    }
+    if (runMode && content && content.value && content.value.props) {
       content.value.props['runMode'] = runMode.value;
     }
     const loadingState = ref((typeof loadingTime !== "undefined" || loadingTime) ? true : false);
@@ -255,6 +258,9 @@ export default defineComponent({
       }
       if (targetRef.value.doSubmit) {
         const result = targetRef.value.doSubmit();
+        if (result == undefined) {
+          return;
+        }
         if (LayerUtil.checkPromise(result)) {
           return result;
         } else {
@@ -266,7 +272,6 @@ export default defineComponent({
             }
           })
         }
-
       } else {
         return new Promise((resolve, reject) => {
           reject("未找到目标表单提交方法doSubmit");
@@ -280,6 +285,9 @@ export default defineComponent({
       }
       if (targetRef.value.doUpdate) {
         const result = targetRef.value.doUpdate();
+        if (result == undefined) {
+          return;
+        }
         if (LayerUtil.checkPromise(result)) {
           return result;
         } else {

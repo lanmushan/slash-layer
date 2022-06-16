@@ -37,13 +37,12 @@
   <el-button type="primary" @click="selectFile">选择文件</el-button>
 </template>
 
-<script>
+<script lang="ts">
 import HelloWorld from '@/components/HelloWorld.vue'
 import Layer from "~/components/Layer/ts/Layer";
 import UserForm from "@/components/UserForm.vue"
 import img1 from "@/assets/1.jpg";
-import img2 from "@/assets/2.jpg";
-import img3 from "@/assets/3.jpg";
+import {OpenConfigure} from "~/components/Layer/ts/LayerConfigureDefinition";
 
 export default {
   name: "GlobalConfigurationDemo",
@@ -53,64 +52,124 @@ export default {
     }
   },
   setup() {
-    const test = () => {
-      Layer.open({});
-    }
-    return {
-      test
-    }
-  },
-  methods: {
-    customSizeModal() {
+    const customSizeModal = () => {
       Layer.open({
         position: {
           width: 400,
           height: 400
-        }
+        },
+        content: null,
+        header: false,
+        allowMove: false,
+        footer: false,
+        btn: [],
+        autoCloseTime: 0,
+        closeCallBack: function (id?: string, data?: any): string {
+          throw new Error('Function not implemented.');
+        },
+        title: '',
+        max: false,
+        min: false
       })
-    },
-    notMaxModal() {
+    }
+    const notMaxModal = () => {
       Layer.open({
         max: false,
+        content: null,
+        header: false,
+        allowMove: false,
+        footer: false,
+        btn: [],
+        autoCloseTime: 0,
+        closeCallBack: function (id?: string, data?: any): string {
+          throw new Error('Function not implemented.');
+        },
+        title: '',
+        min: false
       })
-    },
-    notDbFullModal() {
+    }
+    const notDbFullModal = () => {
       Layer.open({
         dbFull: false,
+        content: null,
+        header: false,
+        allowMove: false,
+        footer: false,
+        btn: [],
+        autoCloseTime: 0,
+        closeCallBack: function (id?: string, data?: any): string {
+          throw new Error('Function not implemented.');
+        },
+        title: '',
+        max: false,
+        min: false
       })
-    },
-    notMinModal() {
+    }
+    const notMinModal = () => {
       Layer.open({
         min: false,
+        content: null,
+        header: false,
+        allowMove: false,
+        footer: false,
+        btn: [],
+        autoCloseTime: 0,
+        closeCallBack: function (id?: string, data?: any): string {
+          throw new Error('Function not implemented.');
+        },
+        title: '',
+        max: false
       })
-    },
-    notMove() {
+    }
+    const notMove = () => {
       Layer.open({
         allowMove: false,
-        title: "不可拖动"
+        title: "不可拖动",
+        content: null,
+        header: false,
+        footer: false,
+        btn: [],
+        autoCloseTime: 0,
+        closeCallBack: function (id?: string, data?: any): string {
+          throw new Error('Function not implemented.');
+        },
+        max: false,
+        min: false
       })
-    },
-    customPositionModal() {
+    }
+    const customPositionModal = () => {
       Layer.modal({
         position: {
           top: 200,
           left: 100,
           width: 400,
           height: 400
-        }
+        },
+        content: null,
+        header: false,
+        allowMove: false,
+        footer: false,
+        btn: [],
+        autoCloseTime: 0,
+        closeCallBack: function (id?: string, data?: any): string {
+          throw new Error('Function not implemented.');
+        },
+        title: '',
+        max: false,
+        min: false
       })
-    },
-    open() {
-      this.$layer.open({});
-    },
-    confirm() {
+    }
+    const open = () => {
+      Layer.open({} as any);
+    }
+    const confirm = () => {
       Layer.confirm("您确定要删除么?").then((msg) => {
         alert("点击了确认按钮")
       }).catch((msg) => {
         alert("点击了取消按钮")
       })
-    },
-    modal(size) {
+    }
+    const modal = (size: string) => {
       Layer.modal({
         title: `${size}尺寸模态框示例`,
         position: size,
@@ -120,55 +179,54 @@ export default {
           props: {
             msg: "参数传递"
           }
-        }
-      });
-    },
-    error() {
+        },
+        max: false,
+        min: false
+      } as OpenConfigure);
+    }
+    const error = () => {
       Layer.error("我是错误提示信息");
-    },
-    success() {
+    }
+    const success = () => {
       Layer.success("我是成功提示消息");
-    },
-    info() {
+    }
+    const info = () => {
       Layer.info("我是普通提示消息");
-    },
-    createForm() {
-      Layer.createForm({
+    }
+    const createForm = async () => {
+      await Layer.createForm({
         title: "创建",
         mask: true,
         content: {
-          component: UserForm,
-          props: {
-            msg: "创建用户"
-          }
-        }
-      }).then(() => {
-        alert("成功反馈")
-      }).catch(() => {
-        alert("取消反馈")
-      });
-    },
-    updateForm() {
-      this.$layer.updateForm({
+          component: UserForm
+        },
+        btn: [],
+        autoCloseTime: 0
+      })
+    }
+
+    const updateForm = () => {
+      Layer.updateForm({
         title: "创建用户",
         content: {
           component: UserForm,
-          props: {
-            msg: "创建用户"
-          }
-        }
+        },
+        btn: [],
+        autoCloseTime: 0
       }).then(() => {
         alert("成功反馈")
       }).catch(() => {
         alert("取消反馈")
       });
-    },
-    selectFile(){
-      Layer.selectFile({
+    }
 
+    const selectFile = () => {
+      Layer.selectFile({
+        accept: []
       });
-    },
-    readForm() {
+    }
+
+    const readForm = () => {
       Layer.readForm({
         title: "创建用户",
         content: {
@@ -176,30 +234,39 @@ export default {
           props: {
             msg: "创建用户"
           }
-        }
+        },
+        btn: [],
+        autoCloseTime: 0
       });
-    },
-    getSrc(url) {
-      return new URL(url, import.meta.url).href
-    },
-    closeAll() {
-      Layer.closeAll();
-    },
-    images() {
+    }
 
+    const getSrc = (url: string) => {
+      return new URL(url, import.meta.url).href
+    }
+
+    const closeAll = () => {
+      Layer.closeAll();
+    }
+
+    const images = () => {
       Layer.images({
         imgList: [
           {
+            title: 'xxx',
             src: img1
-          },
-          {
-            src: img2
-          },
-          {
-            src: img3
           }
+
         ]
       });
+    }
+    return {
+      notMove,
+      notMinModal,
+      notDbFullModal,
+      notMaxModal,
+      customPositionModal,
+      customSizeModal,
+      open, confirm, success, error, modal, readForm, createForm, updateForm, info, selectFile,
     }
   }
 }

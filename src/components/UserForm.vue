@@ -129,7 +129,7 @@ export default defineComponent({
     })
     const doSubmit = async () => {
       const res = await createUser(form);
-      return res;
+      return {};
     }
     // const doSubmit = () => {
     //   return form;
