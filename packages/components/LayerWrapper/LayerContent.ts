@@ -30,11 +30,18 @@ export default defineComponent({
                 }
 
             }
+            const doUpdate = () => {
+                if (targetRef.value.doSubmit) {
+                    return targetRef.value.doUpdate();
+                }
+
+            }
             return {
                 props,
                 content,
                 doSubmit,
-                targetRef
+                targetRef,
+                doUpdate
             }
         }
     }

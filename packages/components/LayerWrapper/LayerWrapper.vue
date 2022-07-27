@@ -1,6 +1,6 @@
 <template>
-  <div ref="wrapperRef" @mousedown="onTop" class="layer-wrapper" :class="options.className">
-    <layer-header class="layer-header" :title="options.title"
+  <div ref="wrapperRef" class="layer-wrapper" :class="options.className">
+    <layer-header @mousedown="onTop" class="layer-header" :title="options.title"
                   :max="options.max"
                   :info="options.info"
                   :id="options.id"
@@ -12,8 +12,7 @@
                   @minSize="doMinSize">
 
     </layer-header>
-    <div class="content-wrapper" :style="{height:contentHeight}"
-         v-slash-loading="{state:loadingState,text:loadingText}">
+    <div class="content-wrapper" :style="{height:contentHeight}" v-test="{state:loadingState,text:loadingText}">
       <div class="layer-content">
         <layer-content ref="contentRef" :content="content.component" :props="content.props">
         </layer-content>
@@ -26,7 +25,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, onMounted, PropType, reactive, ref, toRefs} from "vue";
+import {defineComponent, DirectiveBinding, isRef, onMounted, PropType, reactive, ref, toRefs} from "vue";
 import LayerHeader from "./LayerHeader.vue";
 import LayerContent from "./LayerContent";
 import LayerFooter from "./LayerFooter.vue";
@@ -34,6 +33,9 @@ import {LayerPosition, OpenBtn, OpenConfigure} from "../Layer/ts/LayerConfigureD
 import LayerUtil from "../Layer/ts/LayerUtil";
 import Layer from "../Layer/ts/Layer";
 import useCurrentInstance from "../Layer/ts/UseCurrentInstance";
+import {Mount} from "~/util/Mount";
+import Loading from "~/components/LayerLoading/LayerLoading.vue";
+import {VNode} from "@vue/runtime-core";
 
 export default defineComponent({
   name: "LayerWrapper",
@@ -210,6 +212,87 @@ export default defineComponent({
   created() {
     this.doInit();
   },
+  directives: {
+    test: {
+      beforeMount: (pEl: HTMLElement, binding: DirectiveBinding, pVNode: VNode) => {
+        let state = false;
+        let text = "正在加载中"
+        if (typeof binding.value == 'boolean') {
+          state = binding.value
+        } else if (typeof binding.value == "object") {
+          if (isRef(binding.value.state)) {
+            state = binding.value.state.value;
+          } else if (binding.value.state) {
+            state = binding.value.state;
+          }
+          if (binding.value.text) {
+            text = binding.value.text;
+          } else if (binding.arg) {
+            text = binding.arg;
+          }
+        }
+        if (state) {
+          const innerText = ref(text);
+          // setTimeout(()=>{
+          //     innerText.value="xxxxx";
+          // },500)
+          // @ts-ignore
+          let {el, vNode} = Mount(Loading, {
+            props: {
+              describe: innerText.value
+            },
+          })
+          pEl.appendChild(el as Node)
+        } else {
+          const child: HTMLCollectionOf<Element> = pEl.getElementsByClassName("slash-loading")
+          if (child && child.length > 0) {
+            const childElm = child[0] as HTMLDivElement;
+            //todo 后期增加过度效果
+            childElm.remove();
+          }
+        }
+      },
+      // 指令的定义
+      beforeUpdate: (pEl: HTMLElement, binding: DirectiveBinding, pVNode: VNode) => {
+        let state = false;
+        let text = "正在加载中"
+        if (typeof binding.value == 'boolean') {
+          state = binding.value
+        } else if (typeof binding.value == "object") {
+          if (isRef(binding.value.state)) {
+            state = binding.value.state.value;
+          } else if (binding.value.state) {
+            state = binding.value.state;
+          }
+          if (binding.value.text) {
+            text = binding.value.text;
+          } else if (binding.arg) {
+            text = binding.arg;
+          }
+        }
+        if (state) {
+          const innerText = ref(text);
+          // setTimeout(()=>{
+          //     innerText.value="xxxxx";
+          // },500)
+          // @ts-ignore
+          let {el, vNode} = Mount(Loading, {
+            props: {
+              describe: innerText.value
+            },
+          })
+          pEl.appendChild(el as Node)
+        } else {
+          const child: HTMLCollectionOf<Element> = pEl.getElementsByClassName("slash-loading")
+          if (child && child.length > 0) {
+            const childElm = child[0] as HTMLDivElement;
+            //todo 后期增加过度效果
+            childElm.remove();
+          }
+        }
+      }
+    }
+  },
   setup: function (props, ctx) {
     const {
       id,
@@ -235,6 +318,7 @@ export default defineComponent({
     if (runMode && content && content.value && content.value.props) {
       content.value.props['runMode'] = runMode.value;
     }
+
     const loadingState = ref((typeof loadingTime !== "undefined" || loadingTime) ? true : false);
     const wrapperRef = ref<InstanceType<any>>()
     const contentRef = ref<InstanceType<typeof LayerContent>>()
@@ -252,9 +336,12 @@ export default defineComponent({
      * 提交
      * */
     const doSubmit = () => {
-      const {targetRef} = toRefs(contentRef.value);
+      console.log("容器", contentRef.value)
+      const targetRef = contentRef;
+      console.log("目标", contentRef);
       if (targetRef == null) {
         console.error("目标表单为空")
+        return;
       }
       if (targetRef.value.doSubmit) {
         const result = targetRef.value.doSubmit();
@@ -279,7 +366,9 @@ export default defineComponent({
       }
     }
     const doUpdate = () => {
-      const {targetRef} = toRefs(contentRef.value);
+      console.log("容器", contentRef.value)
+      const targetRef = contentRef;
+      console.log("目标", targetRef);
       if (targetRef == null) {
         console.error("目标表单为空")
       }

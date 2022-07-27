@@ -17,20 +17,29 @@ import {
 } from "./LayerConfigureDefinition"
 import Message from "~/components/LayerMessage/LayerMessage.vue"
 import Welcome from "~/components/LayerWelcome/LayerWelcome.vue"
+import LayerWelcome from "~/components/LayerWelcome/LayerWelcome.vue"
 import LayerWrapper from "~/components/LayerWrapper/LayerWrapper.vue";
 import Images from "~/components/LayerImages/LayerImages.vue";
 
 import LayerUtil from "./LayerUtil";
 import OpenConfigureUtil from "./OpenConfigureUtil"
 import {defaultLayerGlobalConfigure, layer_id_prefix, layer_root_prefix} from "../consts/LayerConst";
+import {loadingDirective} from "~/directives/LoadingDirective";
 
 export default class Layer {
     static configure: LayerGlobalConfigure
     static app: App | undefined
     static layerCache: Map<string, LayerCache> = new Map<string, LayerCache>();
-
+    public static initConfig(config:any){
+        //合并内置配置
+        let obj: LayerGlobalConfigure = LayerUtil.deepClone(config) as LayerGlobalConfigure;
+        obj = LayerUtil.mergeJson(obj, defaultLayerGlobalConfigure) as LayerGlobalConfigure;
+        obj.areaDef = LayerUtil.coverJson(defaultLayerGlobalConfigure.areaDef, config.areaDef)
+       return obj;
+    }
     public static init(config?: LayerGlobalConfigure, app?: App) {
         Layer.app = app;
+        console.log("初始化SlashLayer");
         //loadingDirective(app);
         if (config == undefined) {
             Layer.configure = defaultLayerGlobalConfigure;
@@ -51,7 +60,6 @@ export default class Layer {
                 if (timer) {
                     clearTimeout(timer);
                 }
-                console.log("bianhuale==============");
                 Layer.layoutModal();
             }, 200)
 
@@ -95,7 +103,6 @@ export default class Layer {
      * @param config
      */
     public static confirm(config: ConfirmConfigure | string): Promise<any> {
-        let _that = this;
         let tempConfig: ConfirmConfigure | null = null;
         if (typeof config === "object") {
             tempConfig = config;
@@ -148,7 +155,7 @@ export default class Layer {
                         }
                     }]
             } as unknown as OpenConfigure
-            _that.open(openConfig);
+            Layer.open(openConfig);
         })
     }
 
@@ -158,7 +165,6 @@ export default class Layer {
      * @param config
      */
     public static createForm(config: FormConfigure): Promise<any> {
-        let _that = this;
         return new Promise((resolve, reject) => {
             let formConfig = {
                 ...config,
@@ -183,12 +189,12 @@ export default class Layer {
                         loadingText: "正在提交中",
                         callback: (instance: any, data: any) => {
                             instance.value.doSubmit().then((msg: SuccessDecideResult) => {
-                                const result: SuccessDecideResult = this.configure.successDecide(msg);
+                                const result: SuccessDecideResult = Layer.configure.successDecide(msg);
                                 if (result == undefined || result instanceof TypeError) {
                                     console.error("错误:", msg);
                                     return;
                                 }
-                                this.autoInfo(result);
+                                Layer.autoInfo(result);
                                 if (result.result) {
                                     Layer.close(instance.value.id);
                                 }
@@ -199,8 +205,8 @@ export default class Layer {
                                     return;
                                 }
                                 if (msg) {
-                                    const result: SuccessDecideResult = this.configure.successDecide(msg);
-                                    this.autoInfo(result);
+                                    const result: SuccessDecideResult = Layer.configure.successDecide(msg);
+                                    Layer.autoInfo(result);
                                     reject(result);
                                 }
                                 console.log("自动提交失败", msg);
@@ -211,7 +217,7 @@ export default class Layer {
                     }
                 ]
             } as unknown as FormConfigure
-            _that.form(formConfig);
+            Layer.form(formConfig);
         })
     }
 
@@ -221,9 +227,9 @@ export default class Layer {
      */
     public static autoInfo(msg: SuccessDecideResult): void {
         if (msg.result) {
-            this.success(msg.msg);
+            Layer.success(msg.msg);
         } else {
-            this.error(msg.msg);
+            Layer.error(msg.msg);
         }
     }
 
@@ -232,7 +238,6 @@ export default class Layer {
      * @param config
      */
     public static updateForm(config: FormConfigure): Promise<any> {
-        let _that = this;
         return new Promise((resolve, reject) => {
             let formConfig = {
                 ...config,
@@ -257,12 +262,12 @@ export default class Layer {
                         loadingText: "正在修改中",
                         callback: (instance: any, data: any) => {
                             instance.value.doUpdate().then((msg: SuccessDecideResult) => {
-                                const result: SuccessDecideResult = this.configure.successDecide(msg);
+                                const result: SuccessDecideResult = Layer.configure.successDecide(msg);
                                 if (result == undefined || msg instanceof TypeError) {
                                     console.error("错误:", msg);
                                     return;
                                 }
-                                this.autoInfo(result);
+                                Layer.autoInfo(result);
                                 if (result.result) {
                                     Layer.close(instance.value.id);
                                 }
@@ -273,8 +278,8 @@ export default class Layer {
                                     return;
                                 }
                                 if (msg) {
-                                    const result: SuccessDecideResult = this.configure.successDecide(msg);
-                                    this.autoInfo(result);
+                                    const result: SuccessDecideResult = Layer.configure.successDecide(msg);
+                                    Layer.autoInfo(result);
                                 }
                                 console.error("自动提交失败", msg);
                             }).finally(() => {
@@ -284,7 +289,7 @@ export default class Layer {
                     }
                 ]
             } as unknown as FormConfigure
-            _that.form(formConfig);
+            Layer.form(formConfig);
         })
     }
 
@@ -294,7 +299,6 @@ export default class Layer {
      * @param config
      */
     public static readForm(config: FormConfigure): Promise<any> {
-        let _that = this;
         return new Promise((resolve, reject) => {
             let formConfig = {
                 ...config,
@@ -314,7 +318,7 @@ export default class Layer {
                     }
                 ]
             } as unknown as FormConfigure
-            _that.form(formConfig);
+            Layer.form(formConfig);
         })
     }
 
@@ -334,7 +338,7 @@ export default class Layer {
             content: config.content,
         }
         let openConfig = LayerUtil.leftMergeJson(formConfig, config) as OpenConfigure;
-        return this.open(openConfig);
+        return Layer.open(openConfig);
     }
 
     /**
@@ -368,7 +372,7 @@ export default class Layer {
         if (typeof config === "object") {
             conf = LayerUtil.leftMergeJson(conf, config)
         }
-        this.message(conf);
+        Layer.message(conf);
     }
 
     public static info(config: MessageConfigure | string): void {
@@ -381,7 +385,7 @@ export default class Layer {
         if (typeof config === "object") {
             conf = LayerUtil.leftMergeJson(conf, config)
         }
-        this.message(conf);
+        Layer.message(conf);
     }
 
     /**
@@ -405,7 +409,7 @@ export default class Layer {
                 props: config
             }
         } as unknown as OpenConfigure
-        this.open(openConfig);
+        Layer.open(openConfig);
     }
 
     /**
@@ -436,7 +440,7 @@ export default class Layer {
                 props: config
             }
         } as unknown as OpenConfigure
-        this.open(openConfig);
+        Layer.open(openConfig);
     }
 
     static createHtmlDom(config: OpenConfigure): void {
@@ -445,6 +449,7 @@ export default class Layer {
         if (config.mask) {
             rootDiv.id = `${layer_root_prefix}${config.id}`
             rootDiv.className = "slash-layer-mask";
+            rootDiv.style.zIndex=LayerUtil.getMaxZIndex()+1+"";
             const layerDiv = document.createElement("div");
             if (typeof config.id === "string") {
                 layerDiv.id = config.id;
@@ -464,18 +469,25 @@ export default class Layer {
     }
 
     public static open(config: OpenConfigure): void {
-        const options: OpenConfigure = this.getOpenConfigure(config);
+        const options: OpenConfigure = Layer.getOpenConfigure(config);
         if (typeof options.id === "undefined") {
             options.id = `${layer_id_prefix}_${LayerUtil.createId()}`;
         }
+        if (typeof options.content === "undefined" || !options.content) {
+            options.content={} as OptionsContent;
+        }
+        if(!options.content.component)
+        {
+            options.content.component = LayerWelcome;
+        }
         console.log("最终配置:", options);
-        this.createHtmlDom(options);
+        Layer.createHtmlDom(options);
         const elm: HTMLElement | null = document.getElementById(options.id);
         const {el, vNode} = Mount(LayerWrapper, {
             props: {
                 options: options,
                 class: options.theme
-            }, app: this.app as any, elm: elm as any
+            }, app: Layer.app as any, elm: elm as any
         })
         if (options.autoCloseTime && options.autoCloseTime > 0) {
             setTimeout(() => {
@@ -507,6 +519,7 @@ export default class Layer {
             return;
         }
         let zIndex = LayerUtil.getMaxZIndex()
+        console.log("当前index", zIndex);
         let elms: NodeListOf<HTMLDivElement> = document.querySelectorAll(".slash-layer");
         if (elms) {
             elms.forEach(it => {
@@ -567,7 +580,7 @@ export default class Layer {
             setTimeout(() => {
                 if (layer) {
                     unMount(LayerWrapper, {
-                        app: this.app as any, elm: layer as any
+                        app: Layer.app as any, elm: layer as any
                     })
                     layer.remove();
                 }
@@ -684,18 +697,18 @@ export default class Layer {
             }
         }
         //处理坐标问题
-        currentConfig.position = OpenConfigureUtil.getOpenPosition(currentConfig.position, this.configure);
+        currentConfig.position = OpenConfigureUtil.getOpenPosition(currentConfig.position, Layer.configure);
         return currentConfig;
     }
 
     private getRelativePosition(position: LayerPosition): LayerPosition {
         if (position) {
-            position.left = this.getRelativeLeft(position.width);
+            position.left = Layer.getRelativeLeft(position.width);
         }
         return position;
     }
 
-    private getRelativeLeft(width: number): number {
+    public static getRelativeLeft(width: number): number {
         return LayerUtil.getViewPortWidth() / 2 - width / 2
     }
 
@@ -788,8 +801,6 @@ export default class Layer {
                 childElm.classList.remove("s-win");
             }
         }
-
-
         Layer.top(id);
         Layer.doRearrange();
         // Layer.layoutModal();

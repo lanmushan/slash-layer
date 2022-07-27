@@ -5,7 +5,7 @@ export const config = {
     max: false,
     min: false,
     header: true,
-    loadingTime: 500,
+    loadingTime: 1000,
     dbFull:true,
     allowMove:true,
     successDecide(msg: any) {

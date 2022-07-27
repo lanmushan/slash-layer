@@ -1,4 +1,4 @@
-import {layer_id_prefix} from "../consts/LayerConst";
+import {defaultLayerGlobalConfigure, layer_id_prefix} from "../consts/LayerConst";
 import {LayerGlobalConfigure, OpenConfigure, OptionsContent} from "~/components/Layer/ts/LayerConfigureDefinition";
 import Welcome from "~/components/LayerWelcome/LayerWelcome.vue";
 import OpenConfigureUtil from "~/components/Layer/ts/OpenConfigureUtil";
@@ -90,7 +90,8 @@ export default class LayerUtil {
         }
         return left;
     }
-    public  static copyOpenConfigure(openConfigure: OpenConfigure): OpenConfigure {
+
+    public static copyOpenConfigure(openConfigure: OpenConfigure): OpenConfigure {
         let content = openConfigure.content;
         openConfigure.content = null;
         let currentConfig = JSON.parse(JSON.stringify(openConfigure)) as OpenConfigure;
@@ -99,6 +100,7 @@ export default class LayerUtil {
         currentConfig.closeCallBack = openConfigure.closeCallBack;
         return currentConfig;
     }
+
     public static getOpenConfigure(openConfigure: OpenConfigure): OpenConfigure {
         let currentConfig = LayerUtil.copyOpenConfigure(openConfigure) as OpenConfigure;
         const defConfigure = typeof Layer.configure == "undefined" ? {} as LayerGlobalConfigure : Layer.configure;
@@ -163,7 +165,7 @@ export default class LayerUtil {
             }
         }
         //处理坐标问题
-        currentConfig.position = OpenConfigureUtil.getOpenPosition(currentConfig.position, Layer.configure);
+        currentConfig.position = OpenConfigureUtil.getOpenPosition(currentConfig.position, Layer.configure || defaultLayerGlobalConfigure);
         return currentConfig;
     }
 

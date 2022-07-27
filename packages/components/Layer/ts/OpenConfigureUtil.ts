@@ -1,12 +1,17 @@
 import {LayerGlobalConfigure, LayerPosition} from "./LayerConfigureDefinition";
-import {layer_preset_area_default, layer_preset_area_full} from "../consts/LayerConst";
+import {defaultLayerGlobalConfigure, layer_preset_area_default, layer_preset_area_full} from "../consts/LayerConst";
 import LayerUtil from "../ts/LayerUtil";
+import {Layer} from "~";
 
 export class OpenConfigureUtil {
     /**
      * 获取位置
      */
     public static getOpenPosition(position: LayerPosition | string | undefined, globalConfigure: LayerGlobalConfigure): LayerPosition {
+        if(!globalConfigure)
+        {
+            globalConfigure=defaultLayerGlobalConfigure;
+        }
         const areaDef = globalConfigure.areaDef as any;
         if (typeof position === 'undefined' && !areaDef) {
             console.error("未指定位置和预设位置");

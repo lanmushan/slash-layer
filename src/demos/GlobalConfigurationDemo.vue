@@ -59,7 +59,7 @@ export default {
           height: 400
         },
         content: null,
-        header: false,
+        header: true,
         allowMove: false,
         footer: false,
         btn: [],
@@ -266,6 +266,7 @@ export default {
       notMaxModal,
       customPositionModal,
       customSizeModal,
+      closeAll,
       open, confirm, success, error, modal, readForm, createForm, updateForm, info, selectFile,
     }
   }

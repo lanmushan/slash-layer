@@ -92,6 +92,14 @@
     <el-form-item label="Activity form">
       <el-input v-model="form.desc" type="textarea"></el-input>
     </el-form-item>
+    <el-form-item label="Activity form">
+        <el-select v-model="form.desc">
+          <el-option>拉丝机理发师</el-option>
+          <el-option>拉丝机理发师</el-option>
+
+        </el-select>
+    </el-form-item>
+
   </el-form>
 </template>
 
@@ -134,7 +142,7 @@ export default defineComponent({
     // const doSubmit = () => {
     //   return form;
     // }
-    const doUpdate = () => {
+    const doUpdate = async () => {
       return updateUser(form);
     }
     return {form, doSubmit, doUpdate}
