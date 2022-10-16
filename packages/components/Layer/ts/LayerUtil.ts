@@ -3,6 +3,8 @@ import {LayerGlobalConfigure, OpenConfigure, OptionsContent} from "~/components/
 import Welcome from "~/components/LayerWelcome/LayerWelcome.vue";
 import OpenConfigureUtil from "~/components/Layer/ts/OpenConfigureUtil";
 import {Layer} from "~";
+import {layerConfig} from "~/components/Layer/ts/Layer";
+const win = window as any;
 
 export default class LayerUtil {
     static checkPromise(obj: any | Promise<object>) {
@@ -103,7 +105,7 @@ export default class LayerUtil {
 
     public static getOpenConfigure(openConfigure: OpenConfigure): OpenConfigure {
         let currentConfig = LayerUtil.copyOpenConfigure(openConfigure) as OpenConfigure;
-        const defConfigure = typeof Layer.configure == "undefined" ? {} as LayerGlobalConfigure : Layer.configure;
+        const defConfigure = typeof win["layerConfig"] == "undefined" ? {} as LayerGlobalConfigure : win["layerConfig"];
         if (!currentConfig.title) {
             currentConfig.title = defConfigure.title
         }
@@ -165,7 +167,7 @@ export default class LayerUtil {
             }
         }
         //处理坐标问题
-        currentConfig.position = OpenConfigureUtil.getOpenPosition(currentConfig.position, Layer.configure || defaultLayerGlobalConfigure);
+        currentConfig.position = OpenConfigureUtil.getOpenPosition(currentConfig.position, win["layerConfig"] || defaultLayerGlobalConfigure);
         return currentConfig;
     }
 

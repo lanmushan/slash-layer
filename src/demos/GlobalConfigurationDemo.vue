@@ -76,7 +76,7 @@ export default {
       Layer.open({
         max: false,
         content: null,
-        header: false,
+        header: true,
         allowMove: false,
         footer: false,
         btn: [],
@@ -92,7 +92,7 @@ export default {
       Layer.open({
         dbFull: false,
         content: null,
-        header: false,
+        header: true,
         allowMove: false,
         footer: false,
         btn: [],
@@ -109,7 +109,7 @@ export default {
       Layer.open({
         min: false,
         content: null,
-        header: false,
+        header: true,
         allowMove: false,
         footer: false,
         btn: [],
@@ -126,7 +126,7 @@ export default {
         allowMove: false,
         title: "不可拖动",
         content: null,
-        header: false,
+        header: true,
         footer: false,
         btn: [],
         autoCloseTime: 0,
@@ -146,7 +146,7 @@ export default {
           height: 400
         },
         content: null,
-        header: false,
+        header: true,
         allowMove: false,
         footer: false,
         btn: [],

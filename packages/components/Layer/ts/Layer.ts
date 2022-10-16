@@ -1,4 +1,4 @@
-import {App} from "vue";
+import {App, reactive, ref} from "vue";
 import {Mount, unMount} from '../../../util/Mount'
 
 
@@ -24,31 +24,37 @@ import Images from "~/components/LayerImages/LayerImages.vue";
 import LayerUtil from "./LayerUtil";
 import OpenConfigureUtil from "./OpenConfigureUtil"
 import {defaultLayerGlobalConfigure, layer_id_prefix, layer_root_prefix} from "../consts/LayerConst";
-import {loadingDirective} from "~/directives/LoadingDirective";
+
+export const layerConfig = ref<LayerGlobalConfigure>(
+    reactive({
+        ...defaultLayerGlobalConfigure
+    })
+);
+const win = window as any;
 
 export default class Layer {
-    static configure: LayerGlobalConfigure
-    static app: App | undefined
     static layerCache: Map<string, LayerCache> = new Map<string, LayerCache>();
-    public static initConfig(config:any){
+
+    public static initConfig(config: any) {
         //合并内置配置
         let obj: LayerGlobalConfigure = LayerUtil.deepClone(config) as LayerGlobalConfigure;
-        obj = LayerUtil.mergeJson(obj, defaultLayerGlobalConfigure) as LayerGlobalConfigure;
-        obj.areaDef = LayerUtil.coverJson(defaultLayerGlobalConfigure.areaDef, config.areaDef)
-       return obj;
+        win["layerConfig"] = LayerUtil.mergeJson(obj, defaultLayerGlobalConfigure) as LayerGlobalConfigure;
+        win["layerConfig"].areaDef = LayerUtil.coverJson(defaultLayerGlobalConfigure.areaDef, config.areaDef)
+        return obj;
     }
+
     public static init(config?: LayerGlobalConfigure, app?: App) {
-        Layer.app = app;
+        win["layerApp"] = app;
         console.log("初始化SlashLayer");
         //loadingDirective(app);
         if (config == undefined) {
-            Layer.configure = defaultLayerGlobalConfigure;
+            win["layerConfig"] = defaultLayerGlobalConfigure;
         } else {
             //合并内置配置
             let obj: LayerGlobalConfigure = LayerUtil.deepClone(config) as LayerGlobalConfigure;
             obj = LayerUtil.mergeJson(obj, defaultLayerGlobalConfigure) as LayerGlobalConfigure;
             obj.areaDef = LayerUtil.coverJson(defaultLayerGlobalConfigure.areaDef, config.areaDef)
-            Layer.configure = obj;
+            win["layerConfig"] = obj;
             console.log("全量配置信息", obj);
         }
         let timer: any | null = null;
@@ -189,23 +195,28 @@ export default class Layer {
                         loadingText: "正在提交中",
                         callback: (instance: any, data: any) => {
                             instance.value.doSubmit().then((msg: SuccessDecideResult) => {
-                                const result: SuccessDecideResult = Layer.configure.successDecide(msg);
-                                if (result == undefined || result instanceof TypeError) {
-                                    console.error("错误:", msg);
-                                    return;
-                                }
-                                Layer.autoInfo(result);
-                                if (result.result) {
+                                if (config.autoInfo) {
+                                    const result: SuccessDecideResult = win["layerConfig"].successDecide(msg);
+                                    if (result == undefined || result instanceof TypeError) {
+                                        console.error("错误:", msg);
+                                        return;
+                                    }
+                                    Layer.autoInfo(result);
+                                    if (result.result) {
+                                        Layer.close(instance.value.id);
+                                    }
+                                    resolve(result);
+                                } else {
+                                    resolve(msg);
                                     Layer.close(instance.value.id);
                                 }
-                                resolve(result);
                             }).catch((msg: any) => {
                                 if (msg == undefined || msg instanceof TypeError) {
                                     console.error("错误:", msg);
                                     return;
                                 }
                                 if (msg) {
-                                    const result: SuccessDecideResult = Layer.configure.successDecide(msg);
+                                    const result: SuccessDecideResult = win["layerConfig"].successDecide(msg);
                                     Layer.autoInfo(result);
                                     reject(result);
                                 }
@@ -262,23 +273,28 @@ export default class Layer {
                         loadingText: "正在修改中",
                         callback: (instance: any, data: any) => {
                             instance.value.doUpdate().then((msg: SuccessDecideResult) => {
-                                const result: SuccessDecideResult = Layer.configure.successDecide(msg);
-                                if (result == undefined || msg instanceof TypeError) {
-                                    console.error("错误:", msg);
-                                    return;
-                                }
-                                Layer.autoInfo(result);
-                                if (result.result) {
+                                if (config.autoInfo) {
+                                    const result: SuccessDecideResult = win["layerConfig"].successDecide(msg);
+                                    if (result == undefined || result instanceof TypeError) {
+                                        console.error("错误:", msg);
+                                        return;
+                                    }
+                                    Layer.autoInfo(result);
+                                    if (result.result) {
+                                        Layer.close(instance.value.id);
+                                    }
+                                    resolve(result);
+                                } else {
+                                    resolve(msg);
                                     Layer.close(instance.value.id);
                                 }
-                                resolve(result);
                             }).catch((msg: any) => {
                                 if (msg == undefined || msg instanceof TypeError) {
                                     console.error("错误:", msg);
                                     return;
                                 }
                                 if (msg) {
-                                    const result: SuccessDecideResult = Layer.configure.successDecide(msg);
+                                    const result: SuccessDecideResult = win["layerConfig"].successDecide(msg);
                                     Layer.autoInfo(result);
                                 }
                                 console.error("自动提交失败", msg);
@@ -449,7 +465,7 @@ export default class Layer {
         if (config.mask) {
             rootDiv.id = `${layer_root_prefix}${config.id}`
             rootDiv.className = "slash-layer-mask";
-            rootDiv.style.zIndex=LayerUtil.getMaxZIndex()+1+"";
+            rootDiv.style.zIndex = LayerUtil.getMaxZIndex() + 1 + "";
             const layerDiv = document.createElement("div");
             if (typeof config.id === "string") {
                 layerDiv.id = config.id;
@@ -474,10 +490,9 @@ export default class Layer {
             options.id = `${layer_id_prefix}_${LayerUtil.createId()}`;
         }
         if (typeof options.content === "undefined" || !options.content) {
-            options.content={} as OptionsContent;
+            options.content = {} as OptionsContent;
         }
-        if(!options.content.component)
-        {
+        if (!options.content.component) {
             options.content.component = LayerWelcome;
         }
         console.log("最终配置:", options);
@@ -487,7 +502,7 @@ export default class Layer {
             props: {
                 options: options,
                 class: options.theme
-            }, app: Layer.app as any, elm: elm as any
+            }, app: win["layerApp"] as any, elm: elm as any
         })
         if (options.autoCloseTime && options.autoCloseTime > 0) {
             setTimeout(() => {
@@ -580,7 +595,7 @@ export default class Layer {
             setTimeout(() => {
                 if (layer) {
                     unMount(LayerWrapper, {
-                        app: Layer.app as any, elm: layer as any
+                        app: win["layerApp"] as any, elm: layer as any
                     })
                     layer.remove();
                 }
@@ -634,7 +649,7 @@ export default class Layer {
         console.log("当前配置", openConfigure);
         let currentConfig = LayerUtil.copyOpenConfigure(openConfigure) as OpenConfigure;
 
-        const defConfigure = typeof Layer.configure == "undefined" ? {} as LayerGlobalConfigure : Layer.configure;
+        const defConfigure = typeof win["layerConfig"] == "undefined" ? {} as LayerGlobalConfigure : win["layerConfig"];
         console.log("默认配置", defConfigure);
         if (!currentConfig.title) {
             currentConfig.title = defConfigure.title
@@ -697,7 +712,7 @@ export default class Layer {
             }
         }
         //处理坐标问题
-        currentConfig.position = OpenConfigureUtil.getOpenPosition(currentConfig.position, Layer.configure);
+        currentConfig.position = OpenConfigureUtil.getOpenPosition(currentConfig.position, win["layerConfig"]);
         return currentConfig;
     }
 

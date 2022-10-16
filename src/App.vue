@@ -8,7 +8,6 @@
 
 </template>
 <script lang="ts">
-import HelloWorld from "@/components/HelloWorld.vue"
 import UserForm from "./components/UserForm.vue"
 import GlobalConfigurationDemo from "@/demos/GlobalConfigurationDemo.vue";
 import {Layer} from "~";

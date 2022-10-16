@@ -127,6 +127,7 @@ export interface FormConfigure {
     loadingTime?: number
     theme?: string,
     mask?: boolean,
+    autoInfo?:boolean,
 }
 
 export interface SelectFileConfig{
