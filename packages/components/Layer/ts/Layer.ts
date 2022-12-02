@@ -195,6 +195,9 @@ export default class Layer {
                         loadingText: "正在提交中",
                         callback: (instance: any, data: any) => {
                             instance.value.doSubmit().then((msg: SuccessDecideResult) => {
+                                if (msg == undefined) {
+                                    return;
+                                }
                                 if (config.autoInfo) {
                                     const result: SuccessDecideResult = win["layerConfig"].successDecide(msg);
                                     if (result == undefined || result instanceof TypeError) {
@@ -273,6 +276,9 @@ export default class Layer {
                         loadingText: "正在修改中",
                         callback: (instance: any, data: any) => {
                             instance.value.doUpdate().then((msg: SuccessDecideResult) => {
+                                if (msg == undefined) {
+                                    return;
+                                }
                                 if (config.autoInfo) {
                                     const result: SuccessDecideResult = win["layerConfig"].successDecide(msg);
                                     if (result == undefined || result instanceof TypeError) {
