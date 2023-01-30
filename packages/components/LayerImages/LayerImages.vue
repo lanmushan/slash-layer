@@ -29,7 +29,7 @@
 <script lang="ts">
 import {PictureType} from "./DeclareImages";
 
-import {defineComponent, ref, PropType, reactive, onMounted, useTransitionState} from "vue";
+import {defineComponent, onMounted, PropType, reactive, ref} from "vue";
 
 export interface ImagePictureType extends PictureType {
   current: boolean,
